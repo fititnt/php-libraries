@@ -1,0 +1,44 @@
+--------------------------- Guia rapido de como usar ---------------------------
+
+Para usar essa biblioteca, veja o(s) arquivos em /tests com exemplos praticos.
+
+Guia rapido:
+
+1. Inclua o arquivo e a classe
+
+    include_once '../library/ValorFreteCorreios.php';
+    $correio = new ValorFreteCorreios;
+
+2. Sete os parametros
+
+No objeto criado a partir da classe, sete alguns parametros. Voce podera faze
+r um a um:
+
+    $correio->origem( '90650000' );
+    $correio->destino( '86010060' );
+
+Ou podera usar o metodo de correntes:
+
+    $correio->origem( '90650000' )->destino( '86010060' );
+
+3. Escolha um metodo de exibicao. Tres estao disponiveis: xml, json e objeto
+    
+    $correio->origem( '90650000' );
+    $correio->destino( '86010060' );
+    $correio->xml( );
+ou
+    $correio->origem( '90650000' )->destino( '86010060' )->xml( ); 
+
+A grosso modo, depois de instanciado o objeto, as funções dele se dividem em tr
+es grupos:
+	- Setar variáveis privadas internas
+	- Definir a saida do documento
+	- Funções internas (não acessiveis fora da classe)
+
+A lógica dele é simples: você define as variáveis, e a forma de saida, e ele fa
+rá o resto.	
+
+--------------------------- Documentacao de funcoes ---------------------------
+
+Por fazer. Leia o código fonte do ValorFreteCorreios.php que está bem documenta
+do

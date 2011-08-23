@@ -1,13 +1,14 @@
 <?php
 /*
- * @package         DynamicFileCreate
+ * @package         ValorFreteCorreios
  * @subpackage      
  * @author          Emerson Rocha Luiz ( emerson@webdesign.eng.br - @fititnt -  http://fititnt.org )
  * @copyright       Copyright (C) 2005 - 2011 Webdesign Assessoria em Tecnologia da Informacao.
  * @license         GPL3
  * @version         0.5beta1 (2011-14-08)
  */
-
+// no direct access
+defined('_JEXEC') or die;
 
 class DynamicCreateFile {
     

@@ -10,4 +10,17 @@ Features
     - Print code on screen
 
 - Changelog -
+
+XX: 
+* Fixed Strict warning on _setHeader().
+
 2011-14-08: 0.5beta1 public release
+
+
+CHANGELOG LEGEND:
++ Added
+- Removed
+^ Updated
+* Bugfix
+# Security Fix
+! Relevant message
