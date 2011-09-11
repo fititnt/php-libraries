@@ -57,7 +57,7 @@ $jCmsPath = "C:/xampp/htdocs/bancada26/templates/beez5/html/com_contact";
 
 
 //function parse test
-//print_r(parse($jCmsPath));
+print_r(parse($jCmsPath));
 
 
 //Class ParseDirectory test

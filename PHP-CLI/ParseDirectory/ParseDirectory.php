@@ -20,6 +20,8 @@ class ParseDirectory {
      */
     public $directory;
 
+    static $filePointer;
+
     public function directory($name)
     {
         //If have / at the end, clear it
@@ -44,11 +46,11 @@ class ParseDirectory {
     {
         $info = array();
         $dir = opendir( $this->directory );
-        while ( ( $filePointer = readdir($dir)) !== FALSE )
+        while ( ( $this->filePointer = readdir($dir)) !== FALSE )
         {
-            if( $filePointer != '.' && $filePointer != '..' )
+            if( $this->filePointer != '.' && $this->filePointer != '..' )
             {
-                $path = $this->directory .'/'.$filePointer;
+                $path = $this->directory .'/'.$this->filePointer;
                 if( is_readable($path) )//Be sure if file or path is readable before try parse it
                 {
                     $subdirs = explode('/',$path);
