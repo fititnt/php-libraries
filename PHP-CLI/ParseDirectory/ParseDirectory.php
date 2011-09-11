@@ -16,41 +16,24 @@
 class ParseDirectory {
 
     /*
-     * @var     string      $directory: path to file xml to read
-     */
-    public $directory;
-
-    static $filePointer;
-
-    public function directory($name)
-    {
-        //If have / at the end, clear it
-        if( substr($name,-1) == '/')
-        {
-            $name = substr($name,0,-1);
-        }
-        //The directory exist? Is really one directory? Is readable?
-        if(!file_exists($name) || !is_dir($name) || !is_readable($name)){
-            return FALSE;
-        }
-
-        $this->directory  = $name;
-        return $this;
-    }
-
-    /*
      * Parse directory in to one object
      * @return      object
      */
-    public function parse()
+    public function parse( $directory = NULL )
     {
+        $directory = $this->_clearDirectory( $directory );
+
+        if(!$directory){
+            return FALSE;
+        }
+
         $info = array();
-        $dir = opendir( $this->directory );
-        while ( ( $this->filePointer = readdir($dir)) !== FALSE )
+        $dir = opendir( $directory );
+        while ( ( $filePointer = readdir($dir)) !== FALSE )
         {
-            if( $this->filePointer != '.' && $this->filePointer != '..' )
+            if( $filePointer != '.' && $filePointer != '..' )
             {
-                $path = $this->directory .'/'.$this->filePointer;
+                $path = $directory .'/'.$filePointer;
                 if( is_readable($path) )//Be sure if file or path is readable before try parse it
                 {
                     $subdirs = explode('/',$path);
@@ -61,7 +44,8 @@ class ParseDirectory {
                             'type'          => 'directory',
                             'name'          => end($subdirs),
                             'permission'    => substr( decoct( fileperms($path) ), 1),
-                            'content'       => $this->parse($path));
+                            'content'       => $this->parse( $path )
+                        );
                     }elseif(is_file($path))
                     {
                         $ext = substr( strrchr( end($subdirs),'.' ),1 );
@@ -80,5 +64,25 @@ class ParseDirectory {
         }
         closedir($dir);
         return $info;
+    }
+
+    /*
+     *  Clear and prepare Directory name to be used
+     */
+    private function _clearDirectory( $name = NULL)
+    {
+        if($name === NULL){
+            $name = getcwd();
+        }
+        //If have / at the end, clear it
+        if( substr($name,-1) == '/')
+        {
+            $name = substr($name,0,-1);
+        }
+        //The directory exist? Is really one directory? Is readable?
+        if(!file_exists($name) || !is_dir($name) || !is_readable($name)){
+            return FALSE;
+        }
+        return $name;
     }
 }

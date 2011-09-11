@@ -7,64 +7,37 @@
  * @license         GPL3
  * @version
  */
-//defined('_JEXEC') or die; // no direct access
 
-// Function parse, just for testing the classe ParseDirectory
-function parse($directory)
-{
-    $info = array();
-    $dir = opendir( $directory );
-    while ( ( $filePointer = readdir($dir)) !== FALSE )
-    {
-        if( $filePointer != '.' && $filePointer != '..' )
-        {
-            $path = $directory .'/'.$filePointer;
-            if( is_readable($path) )//Be sure if file or path is readable before try parse it
-            {
-                $subdirs = explode('/',$path);
-                if(is_dir($path))
-                {
-                    $info[] = array(
-                        'path'          => $path,
-                        'type'          => 'directory',
-                        'name'          => end($subdirs),
-                        'permission'    => substr( decoct( fileperms($path) ), 1),
-                        'content'       => parse($path));
-                }elseif(is_file($path))
-                {
-                    $ext = substr( strrchr( end($subdirs),'.' ),1 );
-                    $info[] = array(
-                        'path'          => $path,
-                        'type'          => $ext,
-                        'name'          => end($subdirs),
-                        'permission'    => substr( decoct( fileperms($path) ), 2),
-                        'edited'        => date ("Y:m:d H:i:s", filemtime($path)),
-                        'size'          => filesize($path),
-                        'md5'           => md5_file($path)
-                    );
-                }
-            }
-        }
-    }
-    closedir($dir);
-    return $info;
+echo "This script run both on PHP Command Line Interface and Browser\n
+For set directory on browser: add one param to url with any key but with one path\n
+example: /script.php?foo=C:/xampp/htaccess/mysyte\n
+on CLI, just add a new parameter\n
+example: php script.php C:/xampp/htaccess/mysyte\n";
+
+
+/* Snippet code to emulate argv on browser like on CLI
+ * Author: Emerson Rocha Luiz (http://fititnt.org) License: WTFPLv2
+ */
+if ( !isset($_SERVER['HTTP_USER_AGENT']) ) {
+	$arguments = $argv;
+} else {
+	$arguments = array();
+	$arguments[] = $_SERVER['SCRIPT_FILENAME'];
+	foreach ($_GET as $key => $value){
+		$arguments[] = $value;
+	}
 }
 
-
-//Define paths for test
-$jCmsPath = "C:/xampp/htdocs/bancada26/templates/beez5/html/com_contact";
-//$jCmsPath = "C:/xampp/htdocs/bancada26/templates/beez5/css";
-
-
-//function parse test
-print_r(parse($jCmsPath));
-
-
-//Class ParseDirectory test
-/*
-ini_set('xdebug.max_nesting_level', 300);
+//ini_set('xdebug.max_nesting_level', 999);
 include_once '../ParseDirectory/ParseDirectory.php';
+
+if(!isset($arguments[1])) $arguments[1] = NULL;
+
 $parseDir = new ParseDirectory();
-$parseDir->directory($jCmsPath);
-print_r($parseDir->parse());
-*/
+$start = microtime();
+        $object = $parseDir->parse( $arguments[1] );
+$end = microtime();
+
+print_r( $object );
+echo sprintf("Run time:  %f", $end-$start);
+
