@@ -1,0 +1,1 @@
+This folder have files and folders to help test if is one version of joomla
