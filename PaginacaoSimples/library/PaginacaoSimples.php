@@ -9,9 +9,7 @@
  */
 
 
-class PaginacaoSimples {
-    
- 
+class PaginacaoSimples { 
     
     /*
      * 
@@ -23,48 +21,78 @@ class PaginacaoSimples {
      *
      * var      int
      */
-    private $porPagina = 10;
+    private $limit = 10;
 
     /*
+     *  First Value to show
      *
      * var      int
      */
-    private $contagemAtual = 0;
+    private $start = 1;
 
-    /*
+    /* Last value to show
      *
      * var      int
      */
-    private $limiteInicial = 0;
-
-/*
-     *
-     * var      int
-     */
-    private $limiteFinal = 0;
-
-    /*
-     *
-     * var      int
-     */
-    private $exibirPaginacao = 0;
-
-
+    private $end = NULL;
     
+    /* Fist value to show
+     *
+     * var      int
+     */
+    private $datastart = NULL;
     
-    function __contruct()
+    /* Last value to show
+     *
+     * var      int
+     */
+    private $dataend = NULL;
+
+    /*
+     *
+     * var      int
+     */
+    private $url = NULL;
+    
+    /*
+     *
+     * var      int
+     */
+    private $params = array();
+    
+    /* Contem o objeto e todos os valores usados para montar a query
+     * $objeto->
+     * 
+     *
+     * var      object
+     */
+    private $objeto = 0;
+
+
+    /*
+     * This construct have a few defaul values for brazilian portuguese
+     * You can change it here or just use $params to overide on functions
+     */
+   function __construct()
     {
-        
-    }
-
+        $this->params['startvar'] = 'start';
+        $this->params['show'] = 0 ; //Mostrar mesmo que for desnecessaria?
+        $this->params['text-start'] = 'Inicio';
+        $this->params['text-before'] = 'Anterior';
+        $this->params['text-next'] = 'Pr&oacute;ximo';
+        $this->params['text-end'] = 'Fim';
+        $this->params['text-page'] = 'P&aacute;gina';
+        $this->params['text-of'] = 'de';
+    } 
+    
     /*
      *  @var        int          $valor:
      *
      * return       object      $this
      */
-    public function porpagina( $valor )
+    public function total( $valor )
     {
-        $this->porPagina = $valor;
+        $this->total = $valor;
         return $this;
     }
 
@@ -73,51 +101,192 @@ class PaginacaoSimples {
      *
      * return       object      $this
      */
-    public function contagematual( $valor )
+    public function limit( $valor )
     {
-        $this->contagemAtual = $valor;
+        $this->limit = $valor;
         return $this;
     }
 
-    /*  Method to show on page
+    /*
+     *  @var        int          $valor:
+     *
+     * return       object      $this
+     */
+    public function start( $valor  = NULL)
+    {
+        if ( $valor )
+        {
+            $this->start = $valor;
+        }        
+        return $this;
+    }
+    
+    /*
+     *  @var        string          $valor:
+     *
+     * return       object          $this
+     */
+    public function url( $valor )
+    {
+        $this->url = $valor;
+        return $this;
+    }
+    
+    /*
+     * Return private var
+     * 
+     * @var        string          $name: name of var to return
+     *
+     * return       mixed          $this
+     */
+    public function get( $name )
+    {
+        return $this->$name;
+    }
+
+    /*  Method to calc the object
+     *  Is public because, if you really need call this function, do it
+     *  Can be useful if you do not need generate the HTML output, but want
+     *  just the object 
      *  @var        string          $name: name of var
      * 
      * return       object      $this
      */
-    public function calcula( )
+    public function calc( )
     {
-        if($this->total <= $this->porPagina){
-            $this->exibirPaginacao = 0;//So pra garantir
-        } else {
-            $this->exibirPaginacao = 1;
+        if( $this->total > $this->limit || isset($this->params['show']) )
+        {            
+            
+            $pages = ceil($this->total / $this->limit); //Numero de paginas
+            
+            $pageCurrent = $this->start;
+            
+            $pageBefore = $pageCurrent - 1; //Pode retornar zero
+            $pageNext = $pageCurrent == $pages ? 0 : $pageCurrent + 1;
 
-            if( $this->contagemAtual < $this->porPagina ){
-                $this->limiteInicial = 0;
-                $this->limiteFinal = $this->porPagina;
+            if ($pages > 10){
+                if ($pageCurrent > 5){
+                    if ( $pageCurrent <= ($pages - 5) ){
+                        $pageStart = $pageCurrent - 5;
+                        $pageEnd = $pageCurrent + 5;
+                    } else {
+                        $pageStart = $pages - 10;
+                        $pageEnd = $pages;
+                    }
+                } else {
+                    $pageStart = 0;
+                    $pageEnd = 9;
+                }                
             } else {
-                $this->contagemAtual >= $this->total;
+                $pageStart = 1;
+                $pageEnd = $pages;
             }
         }
-
-        //$this->limiteInicial = ($this->contagemAtual: $this->contagemAtual ? 0);
-        $limiteFinal = $this->limiteInicial + $this->porPagina;
-        if ($limiteFinal > $this->total){
-            $this->limiteFinal = $this->total;
-        } else {
-            $this->limiteFinal = $limiteFinal;
+        
+        $pag = new stdClass();
+        
+        $pag->url = $this->url . $this->params['startvar'] . '=' ; // Maybe problem here. Depents of base URL
+        $pag->current = $pageCurrent;
+        $pag->start = $pageStart;
+        $pag->end = $pageEnd;
+        $pag->before = $pageBefore;
+        $pag->next = $pageNext;
+        $pag->npages = $pages;
+        $pag->pages = array();
+        for( $i=$pageStart; $i<$pageEnd;  ){
+            $pag->pages[]= ++$i;
         }
-
-
+        $this->objeto = $pag;
+        
+        //Data start and end
+        $this->datastart = ($pageCurrent * $this->limit) - $this->limit;//O know...
+        if($this->datastart < $this->total){
+            $this->dataend = $this->datastart + $this->limit;
+        } else {
+            $this->dataend = $this->total;
+        }
+        //Overide limit start if is not equals to zero. Must be  + 1
+        //Maybe have a better way to do it. I hope.
+        if ($this->datastart !== 0){
+            ++$this->datastart;
+        }
+        
+        
         return $this;
     }
-
-
-    private function _checaConsistencia()
-    {
-        if ($this->contagemAtual >= $this->total ){
-            return FALSE;
-        }
-        //return $this
-    }
     
+    /*
+     * Generate HTML of pagination to output
+     * A bit hardcoded. Who cares?
+     * 
+     * @var         array       $params: Aditional params
+     * 
+     * @return      string      $pagination: string with HTML to output 
+     */    
+    public function getHtml( $params = NULL)
+    {
+        if ($params !== NULL)
+        {
+            if ( isset($params['startvar']) )
+            {
+                $this->params['startvar'] = $params['startvar'];
+            }
+            if ( isset($params['show']) )
+            {
+                $this->params['show'] = 1;
+            }
+            if ( isset($params['text-start']) )
+            {
+                $this->params['text-start'] = $params['text-start'];
+            }
+            if ( isset($params['text-before']) )
+            {
+                $this->params['text-before'] = $params['text-before'];
+            }
+            if ( isset($params['text-next']) )
+            {
+                $this->params['text-next'] = $params['text-next'];
+            }
+            if ( isset($params['text-end']) )
+            {
+                $this->params['text-end'] = $params['text-end'];
+            }
+            if ( isset($params['text-page']) )
+            {
+                $this->params['text-page'] = $params['text-page'];
+            }
+            if ( isset($params['text-of']) )
+            {
+                $this->params['text-of'] = $params['text-of'];
+            }
+        }
+        $this->calc();
+        $pag = $this->objeto; 
+        
+        $pagination = "\n";
+        $pagination .= '<div class="pagination">'."\n";
+        $pagination .= "\t".'<p class="counter"> ' . $this->params['text-page'] . ' '. $pag->current. ' '.$this->params['text-of'].' '.$pag->npages.' </p>'."\n";
+        $pagination .= "\t".'<ul>'."\n";
+        if ($pag->before){
+            $pagination .= "\t\t".'<li class="pagination-start"><a href="'.$pag->url . '1' . '" class="pagenav">'.$this->params['text-start'].'</a></li>'."\n";        
+            $pagination .= "\t\t".'<li class="pagination-prev"><a href="'.$pag->url . $pag->before . '" class="pagenav">'.$this->params['text-before'].'</a></li>'."\n";
+        } else {
+            $pagination .= "\t\t".'<li class="pagination-start"><span class="pagenav">'.$this->params['text-start'].'</span></li>'."\n";        
+            $pagination .= "\t\t".'<li class="pagination-prev"><span class="pagenav">'.$this->params['text-before'].'</span></li>'."\n";
+        }
+        foreach($pag->pages AS $item){
+            $pagination .= "\t\t".'<li><a href="'.$pag->url . $item . '" class="pagenav">' .$item . '</a></li>'."\n";
+        }
+        if ($pag->next){
+            $pagination .= "\t\t".'<li class="pagination-next"><a href="'.$pag->url . $pag->next . '" class="pagenav">'.$this->params['text-next'].'</a></li>'."\n";
+            $pagination .= "\t\t".'<li class="pagination-end"><a href="'.$pag->url . $pag->npages . '" class="pagenav">'.$this->params['text-end'].'</a></li>'."\n";
+        } else {
+            $pagination .= "\t\t".'<li class="pagination-next"><span class="pagenav">'.$this->params['text-next'].'</span></li>'."\n";
+            $pagination .= "\t\t".'<li class="pagination-end"><span class="pagenav">'.$this->params['text-end'].'</span></li>'."\n";
+        }
+        $pagination .= "\t".'</ul>';
+        $pagination .= '</div>'."\n";
+        
+        return $pagination;
+    }    
 }
