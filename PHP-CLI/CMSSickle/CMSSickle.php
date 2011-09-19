@@ -10,7 +10,7 @@
 //defined('_JEXEC') or die; // no direct access
 
 /*
- * @note:       dependences: Framework Independent
+ * Class to do a recursive search for CMSs in a directory
  */
 
 class CMSSickle {
@@ -66,6 +66,7 @@ class CMSSickle {
 
     /*
      *  Clear and prepare Directory name to be used
+     *  @todo: this function will have problems with redeclaration of JVersions... Solve it!
      */
     private function _checkCMS( $path, &$cms )
     {
@@ -102,40 +103,26 @@ class CMSSickle {
                 //Check Joomla 1.7
                 if(file_exists($path.'/includes/version.php') && !$mambotsFolder)
                 {
-                    defined('_JEXEC') or define('_JEXEC', 1);
-                    include_once $path.'/includes/version.php';
-                    $jos = new JVersion();
                     $josInfo = array();
                     $josInfo['path'] = $path;
-                    $josInfo['product'] = $jos->PRODUCT;
-                    $josInfo['version'] = JVERSION;
-                    $josInfo['released'] = $jos->RELDATE;
+                    $josInfo['version'] = $this->_getStringNow($path.'/includes/version.php', '$RELEASE') . '.' . $this->_getStringNow($path.'/includes/version.php', '$DEV_LEVEL');
                     $cms[] = $josInfo;
                     return;
                 }
                 //Check Joomla 1.5 & 1.6
                 if(file_exists($path.'/libraries/joomla/version.php'))
                 {
-                    defined('JPATH_BASE') or define('JPATH_BASE', 1);
-                    include_once $path.'/libraries/joomla/version.php';
-                    $jos = new JVersion();
                     $josInfo = array();
                     $josInfo['path'] = $path;
-                    $josInfo['product'] = $jos->PRODUCT;
-                    $josInfo['version'] = $jos->getShortVersion();
-                    $josInfo['released'] = $jos->RELDATE;
                     $cms[] = $josInfo;
-                    $cms[]= $path;
                     return;
                 }
                 //Check Joomla 1.0
                 if(file_exists($path.'/includes/version.php'))
                 {
-                    defined('_VALID_MOS') or define('_VALID_MOS', 1);
-                    //include_once path.'/includes/version.php';
-                    //$jos = new joomlaVersion();
-                    echo 'j10! ';
-                    $cms[]= $path;
+                    $josInfo = array();
+                    $josInfo['path'] = $path;
+                    $cms[] = $josInfo;
                     return;
                 }
             }
@@ -144,6 +131,26 @@ class CMSSickle {
             closedir($handle);
         }
         return $path;
+    }
+
+    /*
+     *  Dirty way to get var from version.php
+     *  Can't redeclare, I'm better don`t use eval()s...
+     *
+     * @var         string          $file: path to file
+     * @var         string          $string: name of string to take
+     * @return      string          $value: value of string. Boolean FALSE if not found
+     */
+    private function _getStringNow( $file, $string)
+    {
+        $fp = fopen($file, "r");
+        if( $fp !== FALSE){
+          $value = $fp;//...
+        }
+        fclose($fp);
+
+        //$value = 'teste';
+        return $value;
     }
 
     /*
