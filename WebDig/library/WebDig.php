@@ -1,52 +1,87 @@
 <?php
 /*
- * @package         <packagename>
- * @author          <authorname> 
- * @copyright       Copyright (C) <year> <copyright>
- * @license         <licensetype>. See license.txt
- * @version         <version>
+ * @package         WebDig
+ * @author          Emerson Rocha Luiz - emerson at webdesign.eng.br - http://fititnt.org
+ * @copyright       Copyright (C) 2011 Webdesign Assessoria em Tecniligia da Informacao. All rights reserved.
+ * @license         GNU General Public License version 3. See license-gpl3.txt
+ * @license         Massachusetts Institute of Technology. See license-mit.txt
+ * @version         0.1alpha
  * 
- * @note            Initial template based on https://github.com/fititnt/template via @fititnt
  */
 
-class ClassFluentInterface {
-    
-    /**
-     * @var     mixed       Generic mixed variable description
+class WebDig {
+
+    /*
+     * 
      */
-    private $variable;
+    private $curl;
     
-    /**
-     * @var     mixed       Generic mixed variable description
+    /*
+     * SSL Certificate. FALSE for none certificate
+     * 
+     * @var         Mixed
      */
-    public $public;
+    private $certificate = FALSE;
     
-    /**
-     * @var     integer     Generic integer variable description
+    /*
+     * Target URL
+     * 
+     * @var         Mixed
      */
-    private $integer;
+    private $url = null;
     
-    /**
-     * @var     string       Generic string variable description
+    /*
+     * Content of last page
+     * 
+     * @var         Mixed
      */
-    private $string;
+    private $content = null;
     
-    /**
-     * @var     array       Generic array variable description
+    /*
+     * Content of last page
+     * 
+     * @var         Array
      */
-    private $array;
+    private $history = array();
+    
 
     /*
      * Initialize values
      */
    function __construct()
     {
-       $this->public = '__construct() started value of $public var';
+       $this->curl = $ch = curl_init();//Init
+       curl_setopt( $this->curl, CURLOPT_RETURNTRANSFER, 1); //Return value instead of print
+       curl_setopt( $this->curl, CURLOPT_SSL_VERIFYPEER, $this->certificate); //SSL Certificate.
     }
     
    function __destruct() {
-       print "\nClassFluentInterface called __destruct()\n";
+       curl_close( $this->curl );
    }
+   
+    /*
+     * Function to debug $this object
+     *
+     * @var       string        $method: print_r or, var_dump
+     * 
+     * @var       boolean       $format: true for print <pre> tags. Default false
+     * 
+     * @return       void
+     */
+    public function debug( $method = 'print_r', $format = FALSE )
+    {
+        if ($format){
+            echo '<pre>';
+        }
+        if ($method === 'print_r'){
+            print_r( $this );
+        } else {
+            var_dump( $this );
+        }
+        if ( $format ){
+            echo '</pre>';
+        }
+    }
     
     /*
      * Delete (set to NULL) generic variable
@@ -59,6 +94,27 @@ class ClassFluentInterface {
     {
         $this->$name = NULL;
         return $this;
+    }
+    
+    /*
+     * Execute Dig. Set TRUE for return content. Default FALSE
+     * 
+     * @var        string          $method: TRUE for return contents, FALSE for not
+     *
+     * return       mixed          $this object OR $this->content String
+     */
+    public function dig( $method = FALSE )
+    {
+        curl_setopt( $this->curl, CURLOPT_URL, $this->url); //Set Target
+        $this->content = curl_exec( $this->curl );//Execute
+        $this->history[] = $this->content;
+        
+        if ($method === TRUE){
+            return $this->content;
+        } else {
+            return $this;
+        }
+        
     }
     
     /*
@@ -87,80 +143,31 @@ class ClassFluentInterface {
     }
     
     /*
-     * Set to $variable the desired value
+     * Set SSL certificate
      * 
-     * @var        mixed          $name: name of var to set
+     * @var        string           $value: name of var to return
      *
      * return       object          $this
      */
-    public function setVariable( $value )
+    public function setCertificate( $value )
     {
-        $this->variable = $value;
+        $this->certificate = $value;
+        curl_setopt( $this->curl, CURLOPT_SSL_VERIFYPEER, $this->certificate);
+
         return $this;
     }
     
     /*
-     * Get $variable desired value
+     * Target URL
      * 
-     * @var        mixed          $name: name of var to return
+     * @var        string           $value: value to set
      *
-     * return       object          $this->$variable
+     * return       object          $this
      */
-    public function getVariable( )
+    public function setUrl( $value )
     {
-        return $this->variable;
-    }
-    
-    /*
-     * Example of private method.
-     * Will call one private method
-     *
-     * @var       <vartype>        <vardescription>
-     * 
-     * @return       <returntype>        <returndescription>
-     */
-    public function doPublicMethod( $variable )
-    {
-        $result  = 'doPublicMethod is asking ...';
-        $result .= $this->_doPrivateMethod( $variable );
-        return $result;
-    }
-    
-    /*
-     * Example of private method. Its a good pratice start with _ (undescore)
-     *
-     * @var       <vartype>        <vardescription>
-     * 
-     * @return       <returntype>        <returndescription>
-     */
-    private function _doPrivateMethod( $variable )
-    {
-        $result  = '_doPrivateMethod for a ';
-        $result .= $variable;
-        return $result;
-    }
-    
-    /*
-     * Function to debug $this object
-     *
-     * @var       string        $method: print_r or, var_dump
-     * 
-     * @var       boolean       $format: true for print <pre> tags. Default false
-     * 
-     * @return       void
-     */
-    public function debug( $method = 'print_r', $format = FALSE )
-    {
-        if ($format){
-            echo '<pre>';
-        }
-        if ($method === 'print_r'){
-            print_r( $this );
-        } else {
-            var_dump( $this );
-        }
-        if ( $format ){
-            echo '</pre>';
-        }
+        $this->url = $value;
+
+        return $this;
     }
 }

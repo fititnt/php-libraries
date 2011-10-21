@@ -1,15 +1,15 @@
 <?php
 /*
- * @package         <packagename>
- * @author          <authorname> 
- * @copyright       Copyright (C) <year> <copyright>
- * @license         <licensetype>. See license.txt
- * @version         <version>
+ * @package         PageParser
+ * @author          Emerson Rocha Luiz - emerson at webdesign.eng.br - http://fititnt.org
+ * @copyright       Copyright (C) 2011 Webdesign Assessoria em Tecniligia da Informacao. All rights reserved.
+ * @license         GNU General Public License version 3. See license-gpl3.txt
+ * @license         Massachusetts Institute of Technology. See license-mit.txt
+ * @version         0.1alpha
  * 
- * @note            Initial template based on https://github.com/fititnt/template via @fititnt
  */
 
-include_once '../library/ClassFluentInterface.php';
+include_once '../library/PageParser.php';
 
 echo '<html><head></head><body><pre>';
 

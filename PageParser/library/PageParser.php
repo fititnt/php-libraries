@@ -1,12 +1,12 @@
 <?php
 /*
- * @package         <packagename>
- * @author          <authorname> 
- * @copyright       Copyright (C) <year> <copyright>
- * @license         <licensetype>. See license.txt
- * @version         <version>
+ * @package         PageParser
+ * @author          Emerson Rocha Luiz - emerson at webdesign.eng.br - http://fititnt.org
+ * @copyright       Copyright (C) 2011 Webdesign Assessoria em Tecniligia da Informacao. All rights reserved.
+ * @license         GNU General Public License version 3. See license-gpl3.txt
+ * @license         Massachusetts Institute of Technology. See license-mit.txt
+ * @version         0.1alpha
  * 
- * @note            Initial template based on https://github.com/fititnt/template via @fititnt
  */
 
 class ClassFluentInterface {
@@ -41,12 +41,8 @@ class ClassFluentInterface {
      */
    function __construct()
     {
-       $this->public = '__construct() started value of $public var';
+       //
     }
-    
-   function __destruct() {
-       print "\nClassFluentInterface called __destruct()\n";
-   }
     
     /*
      * Delete (set to NULL) generic variable
@@ -84,60 +80,6 @@ class ClassFluentInterface {
     {
         $this->$name = $value;
         return $this;
-    }
-    
-    /*
-     * Set to $variable the desired value
-     * 
-     * @var        mixed          $name: name of var to set
-     *
-     * return       object          $this
-     */
-    public function setVariable( $value )
-    {
-        $this->variable = $value;
-        return $this;
-    }
-    
-    /*
-     * Get $variable desired value
-     * 
-     * @var        mixed          $name: name of var to return
-     *
-     * return       object          $this->$variable
-     */
-    public function getVariable( )
-    {
-        return $this->variable;
-    }
-    
-    /*
-     * Example of private method.
-     * Will call one private method
-     *
-     * @var       <vartype>        <vardescription>
-     * 
-     * @return       <returntype>        <returndescription>
-     */
-    public function doPublicMethod( $variable )
-    {
-        $result  = 'doPublicMethod is asking ...';
-        $result .= $this->_doPrivateMethod( $variable );
-        return $result;
-    }
-    
-    /*
-     * Example of private method. Its a good pratice start with _ (undescore)
-     *
-     * @var       <vartype>        <vardescription>
-     * 
-     * @return       <returntype>        <returndescription>
-     */
-    private function _doPrivateMethod( $variable )
-    {
-        $result  = '_doPrivateMethod for a ';
-        $result .= $variable;
-        return $result;
     }
     
     /*
