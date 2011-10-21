@@ -10,12 +10,9 @@
  */
 error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE); //better debug
 
-//include_once '../library/PageParser.php';
-//$pp = new PageParser();
-
 include_once '../../WebDig/library/WebDig.php';
 
-$wd = new WebDig(); //Create new object based on ClassFluentInterface
+$wd = new WebDig(); 
 
 $wd->setUrl('http://www.google.com.br')->setCookie()->dig(TRUE);
 

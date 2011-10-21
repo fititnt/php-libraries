@@ -8,9 +8,17 @@
  * @version         0.1alpha
  * 
  */
-error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE); //better debug
+error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE); //better debug. Or not. Haha!
 include_once '../library/WebDig.php';
 
 $wd = new WebDig(); 
+echo $wd/*->setDebug('debug-autentication-apache.log', TRUE)*/
+    ->setTarget('http://auth.fititnt.org/')
+    ->post( array(
+            'username' => 'infinitum',
+            'password' => 'senha'
+             )
+           )
+    ->get('content');
 
-echo $wd->setUrl("http://br.jcoder.org")->dig( TRUE ); //Print page
+$wd->debug();

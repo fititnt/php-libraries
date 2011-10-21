@@ -28,9 +28,8 @@ Dependences:
 
 -------------------------------------- Todo ------------------------------------
 
-- Add way to work fine with xml files
-- Permit parse HTML5 content
-- Permit parse bad formated HTML content
+- Implement curl_ setopt_ on __construct
+- Implement way to run also in CLI
 
 ----------------------------------- Changelog ----------------------------------
 

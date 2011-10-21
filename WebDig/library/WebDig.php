@@ -31,11 +31,26 @@ class WebDig {
     private $cookieFile = null;
     
     /*
+     * Define if debug mode must be persistent, i.e., if must be log aways and 
+     * not only when is seted when dig
+     * 
+     * @var         Boolean
+     */
+    private $debugPersistent = FALSE;
+    
+    /*
+     * Set debug file resource ( fopen() )
+     * 
+     * @var         resource
+     */
+    private $debugFile = null;
+    
+    /*
      * Target URL
      * 
      * @var         Mixed
      */
-    private $url = null;
+    private $target = null;
     
     /*
      * Content of last page
@@ -78,6 +93,9 @@ class WebDig {
    function __destruct()
    {
        curl_close( $this->curl );
+       if( !is_null($this->debugFile) ){
+           fclose( $this->debugFile );
+       }
    }
    
     /*
@@ -119,14 +137,64 @@ class WebDig {
     
     /*
      * Execute Dig. Set TRUE for return content. Default FALSE
+     * Note that if you enable $debug, it will only print aditional info or via
+     * PHP CLI, or via saved file with 
      * 
-     * @var        string          $method: TRUE for return contents, FALSE for not
+     * @var        string          $target: URL to dig. Default NULL.
+     * 
+     * @var        string          $method: TRUE for return contents. Default FALSE.
+     * 
+     * @var        string          $debug: enable cURL debug. Default FALSE.
+     * 
+     * @var        array           $special: special params
      *
      * return       mixed          $this object OR $this->content String
      */
-    public function dig( $method = FALSE )
+    public function dig( $target = NULL, $method = FALSE, $debug = FALSE, $special = NULL )
     {
-        curl_setopt( $this->curl, CURLOPT_URL, $this->url); //Set Target
+        //Set target
+        if ($target !== NULL)
+        {
+            $this->target = $target;
+        }        
+        curl_setopt( $this->curl, CURLOPT_URL, $this->target); //Set Target        
+        
+        //Set post
+        if ($special !== NULL)
+        {
+            if ( isset($special['POST']) )
+            {
+                curl_setopt( $this->curl, CURLOPT_POST, TRUE );
+                curl_setopt( $this->curl, CURLOPT_POSTFIELDS, $special['POST'] );
+                
+            }
+            /*
+            if ( isset($special['GET']) )
+            {
+                curl_setopt( $this->curl, CURLOPT_POST, TRUE);
+                
+            }
+             */
+        } else {
+            //Few resets. Think latter if is good always reset, or reset only 
+            //when was seted
+            curl_setopt( $this->curl, CURLOPT_POST, FALSE );
+            curl_setopt( $this->curl, CURLOPT_POSTFIELDS, NULL );
+        }
+        
+        //Set debug
+        if ( !$this->debugPersistent ){
+            //If debug is arealdy persistent, it means that verbose was seted to
+            // true, so is not need reset it here again
+            if( $debug ){ //Check later if is working
+                curl_setopt( $this->curl, CURLOPT_VERBOSE, TRUE);
+            } else {
+                //Just for permit override verbose if is seted before
+                curl_setopt( $this->curl, CURLOPT_VERBOSE, FALSE);
+            }
+        }
+        
+                
         $this->content = curl_exec( $this->curl );//Execute
         $this->history[] = $this->content;
         
@@ -171,6 +239,45 @@ class WebDig {
     }
     
     /*
+     * Alias for curl_getinfo
+     * Return informatou about some last actions performed
+     * Read more on http://www.php.net/manual/pt_BR/function.curl-getinfo.php
+     * 
+     * @var        string          $option: curl_getinfo constant
+     *
+     * return       array          $cookie: value of var
+     */
+    public function getInfo( $option = NULL )
+    {
+        $info = curl_getinfo( $this->curl, $option );
+        
+        return $info ;        
+    }
+    
+    /*
+     * Similar to dig, but also post info
+     * 
+     * @var        mixed           $data: array of data or string like 'foo=1&bar=2'
+     * 
+     * @var        string          $target: URL to dig. Default NULL.
+     * 
+     * @var        string          $method: TRUE for return contents. Default FALSE.
+     * 
+     * @var        string          $debug: enable cURL debug. Default FALSE.
+     *
+     * return       mixed          $response object string of dig() function
+     */
+    public function post( $data, $target = NULL, $method = FALSE, $debug = FALSE  )
+    {
+        $response = $this->dig( $target = NULL, 
+                         $method = FALSE, 
+                         $debug = FALSE,
+                         array('POST' => $data)
+                        );
+        return $response;
+    }
+    
+    /*
      * Set one generic variable the desired value
      * 
      * @var        string          $name: name of var to return
@@ -198,6 +305,27 @@ class WebDig {
         return $this;
     }
     
+    /*
+     * Set SSL certificate
+     * 
+     * @var         string           $value: name of var to return
+     * 
+     * @var         boolean          $persistent: if debug must be persistent or not
+     *
+     * @return       object          $this
+     */
+    public function setDebug( $filepath = "debug.log", $persistent = FALSE )
+    {
+        if ( $persistent ){
+            $this->debugPersistent = $persistent;
+            curl_setopt( $this->curl, CURLOPT_VERBOSE, TRUE);
+        }
+        
+        $this->debugFile = fopen($filepath, 'a+');
+        curl_setopt( $this->curl, CURLOPT_STDERR, $this->debugFile);
+        return $this;
+    }
+    
     
     /*
      * Enable cookie for session
@@ -208,7 +336,6 @@ class WebDig {
      */
     public function setCookie( $path = NULL )
     {
-        
         $this->cookieFile = $this->_setFile( $path );
         
         curl_setopt($this->curl, CURLOPT_COOKIEJAR, $this->cookieFile ); 
@@ -247,9 +374,9 @@ class WebDig {
      *
      * return       object          $this
      */
-    public function setUrl( $value )
+    public function setTarget( $value )
     {
-        $this->url = $value;
+        $this->target = $value;
 
         return $this;
     }
@@ -267,7 +394,7 @@ class WebDig {
      */
     public function setcURLOption( $name , $value = 1 )
     {
-        curl_setopt( $this->curl, $name, $this->url);
+        curl_setopt( $this->curl, $name, $this->target);
 
         return $this;
     }
