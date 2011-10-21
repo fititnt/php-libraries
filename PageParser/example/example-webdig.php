@@ -14,7 +14,7 @@ include_once '../library/PageParser.php';
 include_once '../../WebDig/library/WebDig.php';
 
 $pp = new PageParser();
-$wd = new WebDig(); //Create new object based on ClassFluentInterface
+$wd = new WebDig(); 
 
 $page = $wd->setUrl("http://maujor.com/w3ctuto/firstcss.html")->dig( TRUE );
 echo $pp->setPage($page)->ppId('p5');

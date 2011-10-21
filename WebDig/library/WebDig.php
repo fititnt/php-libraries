@@ -24,6 +24,13 @@ class WebDig {
     private $certificate = FALSE;
     
     /*
+     * Last assigned path to file cookie
+     * 
+     * @var         String
+     */
+    private $cookieFile = null;
+    
+    /*
      * Target URL
      * 
      * @var         Mixed
@@ -51,8 +58,21 @@ class WebDig {
    function __construct()
     {
        $this->curl = $ch = curl_init();//Init
+       
+       //Browsing
        curl_setopt( $this->curl, CURLOPT_RETURNTRANSFER, 1); //Return value instead of print
+       curl_setopt( $this->curl, CURLOPT_FOLLOWLOCATION, 1); //Aceot redurects
+       //curl_setopt ($ch, CURLOPT_MAXREDIRS, 1); //Maximum redirects
+       
+       
+       //Time to excecute in seconds
+       curl_setopt( $this->curl, CURLOPT_CONNECTTIMEOUT , 30); //The number of seconds to wait while trying to connect. Use 0 to wait indefinitely.
+       curl_setopt( $this->curl, CURLOPT_TIMEOUT , 30);//The maximum number of seconds to allow cURL functions to execute.
+       
+       //SSL
        curl_setopt( $this->curl, CURLOPT_SSL_VERIFYPEER, $this->certificate); //SSL Certificate.
+       //Emulate Google Agent by default
+       curl_setopt( $this->curl, CURLOPT_USERAGENT, "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)");
     }
     
    function __destruct()
@@ -130,6 +150,26 @@ class WebDig {
         return $this->$name;
     }
     
+    
+    
+    /*
+     * Return generic variable
+     * 
+     * @var        string          $name: name of var to return
+     *
+     * return       mixed          $cookie: value of var
+     */
+    public function getCookie( $filepath = FALSE )
+    {
+        if ( $filepath ){
+            $cookie = $this->cookieFile; 
+        } else {
+            $cookie = $this->_getFileContents( $this->cookieFile );
+        }
+        
+        return $cookie ;        
+    }
+    
     /*
      * Set one generic variable the desired value
      * 
@@ -148,13 +188,55 @@ class WebDig {
      * 
      * @var        string           $value: name of var to return
      *
-     * return       object          $this
+     * @return       object          $this
      */
     public function setCertificate( $value )
     {
         $this->certificate = $value;
         curl_setopt( $this->curl, CURLOPT_SSL_VERIFYPEER, $this->certificate);
 
+        return $this;
+    }
+    
+    
+    /*
+     * Enable cookie for session
+     * 
+     * @var        string           $value: name of var to return
+     *
+     * @return       object          $this
+     */
+    public function setCookie( $path = NULL )
+    {
+        
+        $this->cookieFile = $this->_setFile( $path );
+        
+        curl_setopt($this->curl, CURLOPT_COOKIEJAR, $this->cookieFile ); 
+        curl_setopt($this->curl, CURLOPT_COOKIEFILE, $this->cookieFile );
+
+        return $this;
+    }
+    
+    /*
+     * @todo: not tested. Do it later
+     * 
+     * @var         string          $host: Host of proxy. Normaly one IPv4
+     * 
+     * @var         string          $port: proxy port. Default 80
+     * 
+     * @var         string          $username: username of proxy. Default NULL
+     * 
+     * @var         string          $password: password of proxy port. Default NULL
+     *
+     * @return      object          $this
+     */
+    public function setProxy( $host, $port = '80', $username = NULL, $password = NULL )
+    {
+        curl_setopt( $this->curl, CURLOPT_PROXY, "endereco do proxy");
+        curl_setopt( $this->curl, CURLOPT_PROXYPORT, "porta");
+        if ($username !== NULL && $password !== NULL){
+            curl_setopt( $this->curl, CURLOPT_PROXYUSERPWD, $username.':'.$password ); 
+        }
         return $this;
     }
     
@@ -170,5 +252,80 @@ class WebDig {
         $this->url = $value;
 
         return $this;
+    }
+    
+    
+    /*
+     * Custom cURL otion
+     * http://php.net/manual/en/function.curl-setopt.php
+     * 
+     * @var         string          $name: value to set
+     * 
+     * @var         string          $value: value to set. Default 1.
+     *
+     * @return      object          $this
+     */
+    public function setcURLOption( $name , $value = 1 )
+    {
+        curl_setopt( $this->curl, $name, $this->url);
+
+        return $this;
+    }
+    
+    /*
+     * Test if path give is able to be used for write, and, if not, will try
+     * create a new unique file
+     * 
+     * @todo: improve this function for cases where tempnam() is disabled
+     * 
+     * @var         string          $path: path for check if is valid
+     *
+     * @return       mixed         $filepath: path for a valid file, or false if can't create it
+     */
+    private function _setFile( $path = NULL )
+    {
+        if( $path === NULL || file_exists( $path ) && is_readable ( $path )){            
+            //Get temp absolute path
+            //$tempPath = realpath( sys_get_temp_dir() ); //If errors, implement workarounds of http://php.net/manual/en/function.sys-get-temp-dir.php
+            $tempPath = '/tmp';
+            
+            $filepath = tempnam( $tempPath , 'WebDig');
+            
+        } else {
+            $filepath = $path;
+        }
+
+        return $filepath;
+    }
+    
+    /*
+     * Read one file and return it's contents in a string
+     * 
+     * @todo: improve this function for cases where tempnam() is disabled
+     * 
+     * @var         string         $path: path for check if is valid
+     *
+     * @return       mixed         $content: content for a valid file, or false if can't create it
+     */
+    private function _getFileContents( $filepath )
+    {
+        /*
+        $content = '';
+        if ( file_exists( $filepath ) && is_readable ( $filepath ) ) {
+                $fp = fopen( $filepath , 'r');
+                
+                while (!feof( $fp )) {
+                   $line = fgets( $fp );
+                   //@todo: some check for remove unecessari lines
+                   $content .= $line;                 
+                }
+                
+                
+                fclose( $fp );
+        }
+            */
+        $content = readfile( $filepath );
+        
+        return $content;
     }
 }
