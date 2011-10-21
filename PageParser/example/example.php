@@ -11,36 +11,43 @@
 
 include_once '../library/PageParser.php';
 
-echo '<html><head></head><body><pre>';
+$pp = new PageParser();
 
-$cfi = new ClassFluentInterface(); //Create new object based on ClassFluentInterface
-$cfi->debug();//Like print_r($this) result. Fist call before create object
+$page = <<<EOT
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Title of Page</title>
+</head>
+<body>
+    <div id="header">
+        <h1>H1 Title of page</h1>
+        <span id="exampleid">Content of id exampleid (©, ã, ç ...)</span>
+    </div>    
+    <div class="article">
+        <h2>Sub title one</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis non 
+            libero ligula, eu elementum tortor. Aliquam mollis pulvinar tortor quis 
+            dignissim.</p>
+            <div class="exampleclass">One content of exampleclass</div>
+        <h2>Sub title one</h2>
+            <p>Aliquam erat volutpat. Sed ipsum tortor, consequat tincidunt porta sed, 
+            pulvinar sit amet lectus. Morbi sapien ante, posuere in ullamcorper sit 
+            amet, commodo nec urna.</p>
+            <div class="exampleclass">One more example content of exampleclass</div>
+    </div>
+    <div id="footer">
+        Check validation <a href="http://html5.validator.nu/">HTML5</a> and 
+        <a href="http://jigsaw.w3.org/css-validator/#validate_by_uri">CSS3</a>
+    </div>
+</body>
+</html>
+EOT;
 
-$cfi->setVariable('Example Var')
-        ->set('integer', 13)
-        ->set('string', 'string var')
-        ->set('array', array('a'=> 1, 'b' => 3))
-        ->debug()
-        ;
-//Or in just one line
-//$cli->setVariable('Example Var')->set('integer', 13)->set('string', 'string var')->set('array', array('a'=> 1, 'b' => 3))->debug();
+echo '<pre>' . htmlspecialchars($page) . '</pre>';
 
-echo $cfi->getVariable(); //Example Var
-echo "\n";
+echo "\n" . 'ppId: ';
 
-echo $cfi->get('variable'); //Example Var
-echo "\n";
+echo $pp->setPage($page)->ppId('exampleid');
 
-$cfi->del('variable'); //Example Var
-var_dump( $cfi->get('variable') ) ; //NULL
-
-
-//One way to destruct object is set it to NULL
-//$cfi = NULL; //ClassFluentInterface called __destruct()
-
-//Another way to destruct object is just create a new in sabe variable
-$cfi = new ClassFluentInterface(); //Create new object based on ClassFluentInterface
-
-echo $cfi->doPublicMethod('hello!'); //doPublicMethod is asking ..._doPrivateMethod for a hello!
-
-echo '</pre></body></html>';

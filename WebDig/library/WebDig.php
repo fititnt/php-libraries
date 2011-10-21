@@ -55,7 +55,8 @@ class WebDig {
        curl_setopt( $this->curl, CURLOPT_SSL_VERIFYPEER, $this->certificate); //SSL Certificate.
     }
     
-   function __destruct() {
+   function __destruct()
+   {
        curl_close( $this->curl );
    }
    

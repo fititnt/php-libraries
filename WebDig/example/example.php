@@ -12,6 +12,6 @@
 include_once '../library/WebDig.php';
 
 
-$wd = new WebDig(); //Create new object based on ClassFluentInterface
+$wd = new WebDig(); 
 
 echo $wd->setUrl("http://br.jcoder.org")->dig( TRUE ); //Print page

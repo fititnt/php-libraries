@@ -28,6 +28,10 @@ Dependences:
 
 -------------------------------------- Todo ------------------------------------
 
+- Add way to work fine with xml files
+- Permit parse HTML5 content
+- Permit parse bad formated HTML content
+
 ----------------------------------- Changelog ----------------------------------
 
 2011-10-20: 0.1alpha

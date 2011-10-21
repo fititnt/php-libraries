@@ -9,79 +9,73 @@
  * 
  */
 
-class ClassFluentInterface {
+class PageParser {
     
-    /**
-     * @var     mixed       Generic mixed variable description
+    /*
+     * DomDocument object
+     * 
+     * @var         object
      */
-    private $variable;
+    private $dom;
     
-    /**
-     * @var     mixed       Generic mixed variable description
+    /*
+     * Type of document to parse
+     * 
+     * @var         object
      */
-    public $public;
+    private $doctype = 'HTML';
+ 
     
-    /**
-     * @var     integer     Generic integer variable description
+    /*
+     * Content to parse
+     * 
+     * @var         string
      */
-    private $integer;
+    private $content;
     
-    /**
-     * @var     string       Generic string variable description
-     */
-    private $string;
     
-    /**
-     * @var     array       Generic array variable description
+    /*
+     * Value of last parset element
+     * 
+     * @var         string 
      */
-    private $array;
+    private $element;
+    
+    /*
+     * Value of last parset array of element
+     * 
+     * @var         array 
+     */
+    private $elements;
+    
+    /*
+     * ID of element to parse
+     * 
+     * @var         string
+     */
+    private $id;
+    
+    /*
+     * Path of element to parse
+     * 
+     * @var         string
+     */
+    private $path;
 
     /*
      * Initialize values
      */
    function __construct()
     {
+       $this->dom = $doc = new DomDocument;
+       $this->dom->preserveWhiteSpace = false;
+    }
+    
+   function __destruct() 
+   {
        //
-    }
-    
-    /*
-     * Delete (set to NULL) generic variable
-     * 
-     * @var        string          $name: name of var to return
-     *
-     * return       object          $this
-     */
-    public function del( $name )
-    {
-        $this->$name = NULL;
-        return $this;
-    }
-    
-    /*
-     * Return generic variable
-     * 
-     * @var        string          $name: name of var to return
-     *
-     * return       mixed          $this->$name: value of var
-     */
-    public function get( $name )
-    {
-        return $this->$name;
-    }
-    
-    /*
-     * Set one generic variable the desired value
-     * 
-     * @var        string          $name: name of var to return
-     *
-     * return       object          $this
-     */
-    public function set( $name, $value )
-    {
-        $this->$name = $value;
-        return $this;
-    }
-    
+   }
+   
     /*
      * Function to debug $this object
      *
@@ -105,4 +99,118 @@ class ClassFluentInterface {
             echo '</pre>';
         }
     }
+    
+    /*
+     * Delete (set to NULL) generic variable
+     * 
+     * @var        string          $name: name of var to return
+     *
+     * return       object          $this
+     */
+    public function del( $name )
+    {
+        $this->$name = NULL;
+        return $this;
+    }
+    
+    /*
+     * Execute Dig. Set TRUE for return content. Default FALSE to just set internal variable
+     * 
+     * @var        string          $method: TRUE for return contents, FALSE for not
+     *
+     * return       mixed          $this object OR $this->content String
+     */
+    public function pp( $method = FALSE )
+    {
+        //
+    }
+    
+    /*
+     * Execute Dig. Set TRUE for return content. Default FALSE to just set internal variable
+     * 
+     * @var         string          $value: value of id to return
+     * 
+     * @var         string          $method: TRUE for return contents, FALSE for not
+     *
+     * return       mixed           $this object OR $this->content String
+     */
+    public function ppId( $value, $method = TRUE )
+    {
+        if ($this->doctype === 'HTML'){
+           $this->dom->loadHTML( $this->content);
+           $this->element = $this->dom->getElementById( $value )->nodeValue;
+        } else {
+            die('PageParser: Document Type is not implemented yet. Use HTML type');
+        }
+        
+        if ( $method ) {
+            return $this->element;
+        } else {
+            return $this;
+        }
+        
+    }
+    
+    /*
+     * Return generic variable
+     * 
+     * @var        string          $name: name of var to return
+     *
+     * return       mixed          $this->$name: value of var
+     */
+    public function get( $name )
+    {
+        return $this->$name;
+    }
+    
+    /*
+     * Return last parsed element ( $this->element )
+     * 
+     *
+     * return       mixed          $this->$name: value of var
+     */
+    public function getElement()
+    {
+        return $this->element;
+    }
+    
+    /*
+     * Set one generic variable the desired value
+     * 
+     * @var        string          $name: name of var to return
+     *
+     * return       object          $this
+     */
+    public function set( $name, $value )
+    {
+        $this->$name = $value;
+        return $this;
+    }
+    
+    /*
+     * Set content page to parse
+     * 
+     * @var        string           $value: value to set
+     *
+     * return       object          $this
+     */
+    public function setPage( $value )
+    {
+        $this->content = $value ;
+        return $this;
+    }
+    
+    /*
+     * Set Type of document to parse
+     * 
+     * @var        string           $value: value to set
+     *
+     * return       object          $this
+     */
+    public function setType( $value = 'HTML' )
+    {
+        $this->doctype = strtoupper( $value );
+        return $this;
+    }
+    
 }
