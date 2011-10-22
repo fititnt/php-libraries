@@ -125,7 +125,7 @@ class WebDig {
     /*
      * Delete (set to NULL) generic variable
      * 
-     * @var        string          $name: name of var to return
+     * @var        string           $name: name of var do delete
      *
      * return       object          $this
      */
@@ -280,7 +280,9 @@ class WebDig {
     /*
      * Set one generic variable the desired value
      * 
-     * @var        string          $name: name of var to return
+     * @var         string          $name: name of var to set value
+     * 
+     * @var         mixed           $value: value to set to desired variable
      *
      * return       object          $this
      */
