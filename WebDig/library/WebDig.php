@@ -85,7 +85,7 @@ class WebDig {
        curl_setopt( $this->curl, CURLOPT_TIMEOUT , 30);//The maximum number of seconds to allow cURL functions to execute.
        
        //SSL
-       curl_setopt( $this->curl, CURLOPT_SSL_VERIFYPEER, $this->certificate); //SSL Certificate.
+       //curl_setopt( $this->curl, CURLOPT_SSL_VERIFYPEER, $this->certificate); //SSL Certificate.
        //Emulate Google Agent by default
        curl_setopt( $this->curl, CURLOPT_USERAGENT, "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)");
     }
@@ -269,12 +269,8 @@ class WebDig {
      */
     public function post( $data, $target = NULL, $method = FALSE, $debug = FALSE  )
     {
-        $response = $this->dig( $target = NULL, 
-                         $method = FALSE, 
-                         $debug = FALSE,
-                         array('POST' => $data)
-                        );
-        return $response;
+        $response = $this->dig( $target, $method, $debug, array( 'POST' => $data) );
+        return $this;
     }
     
     /*

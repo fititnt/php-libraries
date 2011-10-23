@@ -89,16 +89,104 @@ class CLIHelper {
     }
     
     /*
-     * Return generic variable
+     * Return the absolute directory path of file that called this method
+     * 
+     * return      String          
+     */
+    public function getDirPath( )
+    {
+        $path = dirname(__FILE__); //Or just __DIR__ for PHP 5.3+
+        return $path;
+    }
+    
+    /*
+     * Return the absolute file path of file that called this method
+     * 
+     * return      String          
+     */
+    public function getFilePath( )
+    {
+        $path = __FILE__;
+        return $path;
+    }
+    
+    /*
+     * Return the URL directory path, if is accessed by browser.
+     * Fallback to get directory path if is acessed by Command Line Interface
+     * 
+     * return      String          
+     */
+    public function getUrlDir( )
+    {
+        if( $this->browser)
+        {
+            //Gambiarra? Gambiarra @todo: change it.
+            if ( $_SERVER['PHP_SELF'] ) //Check if is not root. Maybe do a better check later?
+            { 
+                $currentUrl = $this->getUrlFile();
+                $urlInfo = explode('/', $currentUrl);
+                array_pop($urlInfo);//Get of last element of array
+                $url = implode('/', $urlInfo);
+                
+            } else {
+                $url = $this->getUrlFile();
+            }
+        }
+        else
+        {
+            $url = $this->getDirPath();
+        }        
+        return $url;
+    }
+    
+    /*
+     * Return the URL file path, if is accessed by browser.
+     * Fallback to get file path if is acessed by Command Line Interface
+     * 
+     *
+     * return      String          
+     */
+    public function getUrlFile( )
+    {
+        
+        if( $this->browser)
+        {
+            if ( empty($_SERVER["HTTPS"]) ){
+                $url = 'https://';
+            } else {
+                $url = 'http://';
+            }
+            
+            $url .= $_SERVER["SERVER_NAME"];
+            
+            if ($_SERVER["SERVER_PORT"] != "80"){
+                $url .= ':'. $_SERVER["SERVER_PORT"];
+            }
+            
+            $url .= $_SERVER["REQUEST_URI"];
+        } 
+        else
+        {
+            $url = $this->getFilePath();
+        }
+        
+
+        
+        return $url;
+    }
+    
+    /*
+     * Return the absolute file path of file that called this method
      * 
      * @var        String          $name: name of var to return
      *
      * return      Mixed          $this->$name: value of var
      */
-    public function get( $name )
+    public function getUrlPathCurrent( $name )
     {
         return $this->$name;
     }
+    
     
     /*
      * Return SAPI name
