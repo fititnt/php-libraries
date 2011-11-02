@@ -1,4 +1,5 @@
 <?php
+
 /*
  * @package         PageParser
  * @author          Emerson Rocha Luiz - emerson at webdesign.eng.br - http://fititnt.org
@@ -14,203 +15,192 @@ class PageParser {
     /*
      * DomDocument object
      * 
-     * @var         object
+     * @param         object
      */
+
     private $dom;
-    
+
     /*
      * Type of document to parse
      * 
-     * @var         object
+     * @param object
      */
     private $doctype = 'HTML';
- 
-    
+
+
     /*
      * Content to parse
      * 
-     * @var         string
+     * @param string
      */
     private $content;
-    
-    
+
+
     /*
      * Value of last parset element
      * 
-     * @var         string 
+     * @param string 
      */
     private $element;
-    
+
     /*
      * Value of last parset array of element
      * 
-     * @var         array 
+     * @param array 
      */
     private $elements;
-    
+
     /*
      * ID of element to parse
      * 
-     * @var         string
+     * @param string
      */
     private $id;
-    
+
     /*
      * Path of element to parse
      * 
-     * @var         string
+     * @param string
      */
     private $path;
 
     /*
      * Initialize values
      */
-   function __construct()
-    {
-       $this->dom = $doc = new DomDocument;
-       $this->dom->preserveWhiteSpace = false;
+
+    function __construct() {
+        $this->dom = $doc = new DomDocument;
+        $this->dom->preserveWhiteSpace = false;
     }
-    
-   function __destruct() 
-   {
-       //
-   }
-   
-    /*
+
+    function __destruct() {
+        //
+    }
+
+    /**
      * Function to debug $this object
      *
-     * @var       string        $method: print_r or, var_dump
-     * 
-     * @var       boolean       $format: true for print <pre> tags. Default false
-     * 
-     * @return       void
+     * @param String $method: print_r or, var_dump
+     * @param boolean $format: true for print <pre> tags. Default false
+     * @return void
      */
-    public function debug( $method = 'print_r', $format = FALSE )
-    {
-        if ($format){
+    public function debug($method = 'print_r', $format = FALSE) {
+        if ($format) {
             echo '<pre>';
         }
-        if ($method === 'print_r'){
-            print_r( $this );
+        if ($method === 'print_r') {
+            print_r($this);
         } else {
-            var_dump( $this );
+            var_dump($this);
         }
-        if ( $format ){
+        if ($format) {
             echo '</pre>';
         }
     }
-    
+
     /*
      * Delete (set to NULL) generic variable
      * 
-     * @var        string          $name: name of var to return
-     *
-     * return       object          $this
+     * @param string $name: name of var to return
+     * @return object $this
      */
-    public function del( $name )
-    {
+
+    public function del($name) {
         $this->$name = NULL;
         return $this;
     }
-    
+
     /*
      * Execute Dig. Set TRUE for return content. Default FALSE to just set internal variable
      * 
-     * @var        string          $method: TRUE for return contents, FALSE for not
-     *
-     * return       mixed          $this object OR $this->content String
+     * @param string $method: TRUE for return contents, FALSE for not
+     * @return mixed $this object OR $this->content String
      */
-    public function pp( $method = FALSE )
-    {
+
+    public function pp($method = FALSE) {
         //
     }
-    
+
     /*
      * Execute Dig. Set TRUE for return content. Default FALSE to just set internal variable
      * 
-     * @var         string          $value: value of id to return
-     * 
-     * @var         string          $method: TRUE for return contents, FALSE for not
-     *
-     * return       mixed           $this object OR $this->content String
+     * @param String $value: value of id to return
+     * @param String $method: TRUE for return contents, FALSE for not
+     * @return mixed $this object OR $this->content String
      */
-    public function ppId( $value, $method = TRUE )
-    {
-        if ($this->doctype === 'HTML'){
-           $this->dom->loadHTML( $this->content);
-           $this->element = $this->dom->getElementById( $value )->nodeValue;
+
+    public function ppId($value, $method = TRUE) {
+        if ($this->doctype === 'HTML') {
+            $this->dom->loadHTML($this->content);
+            $this->element = $this->dom->getElementById($value)->nodeValue;
         } else {
             die('PageParser: Document Type is not implemented yet. Use HTML type');
         }
-        
-        if ( $method ) {
+
+        if ($method) {
             return $this->element;
         } else {
             return $this;
         }
-        
     }
-    
+
     /*
      * Return generic variable
      * 
-     * @var        string          $name: name of var to return
-     *
-     * return       mixed          $this->$name: value of var
+     * @param string $name: name of var to return
+     * @return mixed $this->$name: value of var
      */
-    public function get( $name )
-    {
+
+    public function get($name) {
         return $this->$name;
     }
-    
+
     /*
      * Return last parsed element ( $this->element )
      * 
-     *
-     * return       mixed          $this->$name: value of var
+     * @return mixed $this->$name: value of var
      */
-    public function getElement()
-    {
+
+    public function getElement() {
         return $this->element;
     }
-    
+
     /*
      * Set one generic variable the desired value
      * 
-     * @var        string          $name: name of var to return
+     * @param        string          $name: name of var to return
      *
      * return       object          $this
      */
-    public function set( $name, $value )
-    {
+
+    public function set($name, $value) {
         $this->$name = $value;
         return $this;
     }
-    
+
     /*
      * Set content page to parse
      * 
-     * @var        string           $value: value to set
+     * @param        string           $value: value to set
      *
      * return       object          $this
      */
-    public function setPage( $value )
-    {
-        $this->content = $value ;
+    public function setPage($value) {
+        $this->content = $value;
         return $this;
     }
-    
+
     /*
      * Set Type of document to parse
      * 
-     * @var        string           $value: value to set
+     * @param        string           $value: value to set
      *
      * return       object          $this
      */
-    public function setType( $value = 'HTML' )
-    {
-        $this->doctype = strtoupper( $value );
+
+    public function setType($value = 'HTML') {
+        $this->doctype = strtoupper($value);
         return $this;
     }
-    
+
 }
