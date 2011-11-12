@@ -11,28 +11,30 @@
 
 class CLIHelper {
     
-    /*
-     * @var         String      Name of SAPI
+    /** 
+     * Name of SAPI
+     * 
+     * @varb String 
      */
     private         $sapiName;
     
     
-    /*
+    /**
      * Determine if access is made by Command Line Interface
      * 
-     * @var         Boolean      Full name of SAPI
+     * @var  Boolean  Full name of SAPI
      */
     private         $cli = FALSE;
     
-    /*
+    /**
      * Determine if access is made by Browser
      * 
-     * @var         Boolean      Full name of SAPI
+     * @var Boolean Full name of SAPI
      */
     private         $browser = FALSE;
     
 
-    /*
+    /**
      * Initialize values
      */
     function __construct()
@@ -51,13 +53,11 @@ class CLIHelper {
        //
    }
    
-    /*
+    /**
      * Function to debug $this object
      *
-     * @var         String        $method: print_r or, var_dump
-     * 
-     * @var         Boolean       $format: true for print <pre> tags. Default false
-     * 
+     * @var String $method: print_r or, var_dump
+     * @var Boolean $format: true for print <pre> tags. Default false
      * @return      Void
      */
     public function debug( $method = 'print_r', $format = FALSE )
@@ -75,12 +75,11 @@ class CLIHelper {
         }
     }
     
-    /*
+    /**
      * Delete (set to NULL) generic variable
      * 
-     * @var        String           $name: name of var do delete
-     *
-     * return      Object          $this
+     * @var String $name: name of var do delete
+     * @return Object $this
      */
     public function del( $name )
     {
@@ -88,10 +87,10 @@ class CLIHelper {
         return $this;
     }
     
-    /*
+    /**
      * Return the absolute directory path of file that called this method
      * 
-     * return      String          
+     * @return String          
      */
     public function getDirPath( )
     {
@@ -99,10 +98,10 @@ class CLIHelper {
         return $path;
     }
     
-    /*
+    /**
      * Return the absolute file path of file that called this method
      * 
-     * return      String          
+     * @return String          
      */
     public function getFilePath( )
     {
@@ -110,11 +109,11 @@ class CLIHelper {
         return $path;
     }
     
-    /*
+    /**
      * Return the URL directory path, if is accessed by browser.
      * Fallback to get directory path if is acessed by Command Line Interface
      * 
-     * return      String          
+     * @return String          
      */
     public function getUrlDir( )
     {
@@ -139,12 +138,11 @@ class CLIHelper {
         return $url;
     }
     
-    /*
+    /**
      * Return the URL file path, if is accessed by browser.
      * Fallback to get file path if is acessed by Command Line Interface
      * 
-     *
-     * return      String          
+     * @return String          
      */
     public function getUrlFile( )
     {
@@ -175,12 +173,11 @@ class CLIHelper {
         return $url;
     }
     
-    /*
+    /**
      * Return the absolute file path of file that called this method
      * 
      * @var        String          $name: name of var to return
-     *
-     * return      Mixed          $this->$name: value of var
+     * @return      Mixed          $this->$name: value of var
      */
     public function getUrlPathCurrent( $name )
     {
@@ -188,11 +185,10 @@ class CLIHelper {
     }
     
     
-    /*
+    /**
      * Return SAPI name
      * 
-     *
-     * @return      String           $this->$name: value of var
+     * @return String $this->$name: value of var
      */
     public function getSapi( )
     {
@@ -200,7 +196,7 @@ class CLIHelper {
         return $name;
     }
     
-    /*
+    /**
      * Emulate CLI $argv even if accessed by browser
      * 
      * This script run both on PHP Command Line Interface and Browser 
@@ -210,8 +206,6 @@ class CLIHelper {
      * example: php script.php C:/xampp/htaccess/mysyte
      * 
      * @see https://gist.github.com/1210131
-     * 
-     *
      * @return      String           $this->$name: value of var
      */
     public function getVar( $name = NULL, $method = NULL )
@@ -231,13 +225,11 @@ class CLIHelper {
         return $name;
     }
     
-    /*
+    /**
      * Set one generic variable the desired value
      * 
      * @var         String          $name: name of var to set value
-     * 
      * @var         Mixed           $value: value to set to desired variable
-     *
      * return       Object          $this
      */
     public function set( $name, $value )
@@ -246,12 +238,11 @@ class CLIHelper {
         return $this;
     }
     
-    /*
+    /**
      * Example of private method. Its a good pratice start with _ (undescore)
      *
-     * @var             <vartype>        <vardescription>
-     * 
-     * @return          <returntype>        <returndescription>
+     * @var
+     * @return
      */
     private function _getShortSapiName( )
     {

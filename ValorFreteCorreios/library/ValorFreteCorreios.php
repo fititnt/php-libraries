@@ -1,27 +1,24 @@
 <?php
-/*
- * @package         ValorFreteCorreios
- * @subpackage      
+
+/**
+ * @package         ValorFreteCorreios  
  * @author          Emerson Rocha Luiz ( emerson@webdesign.eng.br - @fititnt -  http://fititnt.org )
  * @copyright       Copyright (C) 2005 - 2011 Webdesign Assessoria em Tecnologia da Informacao.
  * @license         WTFPLv2 ( http://sam.zoy.org/wtfpl )
  * @version         0.5beta1 (2011-08-23)
  */
-
-
-class ValorFreteCorreios { 
-
-    
+class ValorFreteCorreios {
     /* Seu código administrativo junto à ECT. O código está disponível no corpo 
      * do contrato firmado com os Correios.
      * 
      * Exigido: Não, mas o parâmetro tem que ser passado mesmo vazio.
      * 
-     * var      string     
+     * @var String    
      */
+
     private $nCdEmpresa = '';
-    
-    /* 
+
+    /**
      * Senha para acesso ao serviço, associada ao seu código administrativo. A 
      * senha inicial corresponde aos 8 primeiros dígitos do CNPJ informado no 
      * contrato. A qualquer momento, é possível alterar a senha no endereço 
@@ -29,12 +26,12 @@ class ValorFreteCorreios {
      * 
      * Exigido: Não, mas o parâmetro tem que ser passado mesmo vazio.
      * 
-     * var      string     
+     * @var String    
      */
     private $sDsSenha = '';
-    
-    
-    /* Código do serviço 
+
+    /**
+     * Código do serviço 
      * Código       Serviço
      * 41106        PAC sem contrato
      * 40010        SEDEX sem contrato
@@ -55,20 +52,21 @@ class ValorFreteCorreios {
      * 
      * Exigido: Sim. Pode ser mais de um numa consulta separados por vírgula.
      * 
-     * var      string     
+     * @var String    
      */
-    
     private $nCdServico = '41106,40010';
-    
-    /* CEP de Origem sem hífen Exemplo: 05311900
+
+    /**
+     * CEP de Origem sem hífen Exemplo: 05311900
      * 
      * Exigido: Sim
      * 
      * var      string     
      */
     private $sCepDestino;
-    
-    /* Peso da encomenda, incluindo sua embalagem. O peso deve ser informado em 
+
+    /**
+     * Peso da encomenda, incluindo sua embalagem. O peso deve ser informado em 
      * quilogramas.
      * 
      * Exigido: Sim
@@ -76,8 +74,9 @@ class ValorFreteCorreios {
      * var      string     
      */
     private $nVlPeso = 1;
-    
-    /* PFormato da encomenda (incluindo embalagem).
+
+    /**
+     * PFormato da encomenda (incluindo embalagem).
      * Valores possíveis: 1 ou 2
      * 1 – Formato caixa/pacote
      * 2 – Formato rolo/prisma
@@ -87,40 +86,45 @@ class ValorFreteCorreios {
      * var      Int     
      */
     private $nCdFormato = 1;
-    
-    /* Comprimento da encomenda (incluindo embalagem), em centímetros.
+
+    /**
+     * Comprimento da encomenda (incluindo embalagem), em centímetros.
      * 
      * Exigido: Sim
      * 
      * var      Decimal     
      */
-    private $nVlComprimento = 33;//Valor maximo, por padrao
-    
-    /* Altura da encomenda (incluindo embalagem), em centímetros.
+    private $nVlComprimento = 33; //Valor maximo, por padrao
+
+    /**
+     * Altura da encomenda (incluindo embalagem), em centímetros.
      * 
      * Exigido: Sim
      * 
      * var      Decimal     
      */
-    private $nVlAltura = 22;//Valor maximo, por padrao
-    
-    /* Largura da encomenda (incluindo embalagem), em centímetros.
+    private $nVlAltura = 22; //Valor maximo, por padrao
+
+    /**
+     * Largura da encomenda (incluindo embalagem), em centímetros.
      * 
      * Exigido: Sim
      * 
      * var      Decimal     
      */
-    private $nVlLargura = 33;//Valor maximo, por padrao
-    
-    /* Diâmetro da encomenda (incluindo embalagem), em centímetros.
+    private $nVlLargura = 33; //Valor maximo, por padrao
+
+    /**
+     * Diâmetro da encomenda (incluindo embalagem), em centímetros.
      * 
      * Exigido: Sim
      * 
      * var      Decimal     
      */
     private $nVlDiametro;
-    
-    /* Indica se a encomenda será entregue com o serviço adicional mão própria.
+
+    /**
+     * Indica se a encomenda será entregue com o serviço adicional mão própria.
      * Valores possíveis: S ou N (S – Sim, N – Não)
      * 
      * Exigido: Sim
@@ -128,8 +132,9 @@ class ValorFreteCorreios {
      * var      String     
      */
     private $sCdMaoPropria = 'N';
-    
-    /* Indica se a encomenda será entregue com o serviço adicional valor 
+
+    /**
+     * Indica se a encomenda será entregue com o serviço adicional valor 
      * declarado. Neste campo deve ser apresentado o valor declarado desejado, 
      * em Reais.
      * 
@@ -138,8 +143,9 @@ class ValorFreteCorreios {
      * var      Decimal     
      */
     private $nVlValorDeclarado = 0;
-    
-    /* Indica se a encomenda será entregue com o serviço adicional aviso de 
+
+    /**
+     * Indica se a encomenda será entregue com o serviço adicional aviso de 
      * recebimento.
      * Valores possíveis: S ou N (S – Sim, N – Não)
      * 
@@ -149,8 +155,8 @@ class ValorFreteCorreios {
      */
     private $sCdAvisoRecebimento = 'N';
 
-    
-    /* Tipo de retorn
+    /**
+     * Tipo de retorn
      * Indica a forma de retorno da consulta.
      * XML - Resultado em XML
      * Popup - Resultado em uma janela popup
@@ -158,233 +164,206 @@ class ValorFreteCorreios {
      * 
      * Exigido: Sim.
      * 
-     * var      string     
+     * @var String    
      */
     private $StrRetorno = 'XML';
-    
-    /* 
+
+    /*
      * Resultado bruto da pagina dos correios
      * 
-     * var      string     
+     * @var String     
      */
     private $resultado = NULL;
-    
-    
-    function __contruct()
-    {
+
+    function __contruct() {
         
     }
 
-    /*  Metodo para exibir em formaso JSON
+    /**
+     *  Metodo para exibir em formaso JSON
      * 
-     * @var         string      $type: mime-type a ser retornado.    
-     * 
-     * return       object      $this
+     * @var String $type: mime-type a ser retornado.    
+     * @return Object $this
      */
-    public function json( $type = NULL )
-    {
-        if( $type == NULL ){
+    public function json($type = NULL) {
+        if ($type == NULL) {
             $type = 'json';
         }
-        $this->_sendHeader( $type );
+        $this->_sendHeader($type);
         $this->StrRetorno = 'XML';
-        $resultado = $this->_correio();        
-        echo json_encode( $resultado );
+        $resultado = $this->_correio();
+        echo json_encode($resultado);
         return $this;
     }
-    
-    /*  
+
+    /**
      * Metodo para exibir em formato XML
      *
-     * @var         string      $type: mime-type a ser retornado.    
-     * 
-     * return       object      $this
+     * @var String $type: mime-type a ser retornado.    
+     * @return       object      $this
      */
-    public function xml( $type = NULL )
-    {
-        if($type == NULL){
+    public function xml($type = NULL) {
+        if ($type == NULL) {
             $type = 'xml';
         }
-        
-        $this->_sendHeader( $type );
+
+        $this->_sendHeader($type);
         $this->StrRetorno = 'XML';
-        $resultado = $this->_correio();        
+        $resultado = $this->_correio();
         echo $this->resultado;
         return $this;
     }
-    
-    /*  
+
+    /**
      * Metodo para retornar o objeto resultante
      *   
-     * return       object      $objeto
+     * @return Object $objeto
      */
-    public function objeto( )
-    {
+    public function objeto() {
         $this->StrRetorno = 'XML';
         $objeto = $this->_correio();
         return $objeto;
     }
-   
-    /*
-     *  @var        string          $name: name of var
-     *  @var        mixed           $value: value of var
-     * 
-     * return       object      $this
+
+    /**
+     * @var        string          $name: name of var
+     * @var        mixed           $value: value of var
+     * @return       object      $this
      */
-    public function set( $name, $value )
-    {
+    public function set($name, $value) {
         $this->$name = $value;
         return $this;
     }
-    
-    /*
-     *  @var        string          $name: name of var
-     * 
-     * return       object          $this
+
+    /**
+     * @var String  $name: name of var
+     * @return Object $this
      */
-    public function del( $name )
-    {
+    public function del($name) {
         $this->$name = NULL;
         return $this;
     }
-   
-    /*
+
+    /**
      *  CEP de origem. Apenas numeros
      * 
      *  @var        string          $name: name of var
      * 
      * return       object          $this
      */
-    public function origem( $value )
-    {
-        $this->sCepOrigem = $value;   
+    public function origem($value) {
+        $this->sCepOrigem = $value;
         return $this;
     }
-    
-    /*
+
+    /**
+     * CEP de destino. Apenas numeros
+     * 
+     * @var String $name: name of var
+     * 
+     * @return Object $this
+     */
+    public function destino($value) {
+        $this->sCepDestino = $value;
+        return $this;
+    }
+
+    /**
      *  CEP de destino. Apenas numeros
      * 
-     *  @var        string          $name: name of var
-     * 
-     * return       object          $this
+     * @var@var String $name: name of var
+     * @return Object $this
      */
-    public function destino( $value )
-    {
-        $this->sCepDestino = $value;   
+    public function peso($value) {
+        $this->nVlPeso = $value;
         return $this;
     }
-    
-    /*
-     *  CEP de destino. Apenas numeros
-     * 
-     *  @var        string          $name: name of var
-     * 
-     * return       object          $this
-     */
-    public function peso( $value )
-    {
-        $this->nVlPeso = $value;   
-        return $this;
-    }
-    
-    /*
+
+    /**
      *  Numero do servico
      * 
-     *  @var        string          $name: name of var
-     * 
-     * return       object          $this
+     * @var String $name: name of var
+     * @return Object $this
      */
-    public function servico( $value )
-    {
-        $this->nCdServico = $value;   
+    public function servico($value) {
+        $this->nCdServico = $value;
         return $this;
     }
-    
-  
-    /*  
+
+    /**
      * Send header of document
-     * 
-     * @return       void
-     * 
      * @see http://www.ietf.org/rfc/rfc4627.txt
      * 
-     * 
+     * @return       void
      */
-    private function _sendHeader( $type )
-    {
-        switch ( (string)$type){
+    private function _sendHeader($type) {
+        switch ((string) $type) {
             case 'xml':
                 header('Content-type: text/xml');
                 break;
             case 'json':
-                header('Content-type: application/json'); 
+                header('Content-type: application/json');
             default:
-                header('Content-type: '. $type); 
-
-        }        
-        header('Pragma: no-cache'); 
+                header('Content-type: ' . $type);
+        }
+        header('Pragma: no-cache');
     }
-    
-    /*  
+
+    /**
      * Send header of document
-     * 
-     * @return       void
-     * 
      * @see http://www.ietf.org/rfc/rfc4627.txt
      * 
-     * 
+     * @return       void
      */
-    private function _correio()
-    {
+    private function _correio() {
         $queries = array('nCdEmpresa' => $this->nCdEmpresa,
-                         'sDsSenha' => $this->sDsSenha,
-                         'nCdServico' => $this->nCdServico,
-                         'sCepOrigem' => $this->sCepOrigem,
-                         'sCepDestino' => $this->sCepDestino,
-                         'nVlPeso' => $this->nVlPeso,
-                         'nCdFormato' => $this->nCdFormato,
-                         'nVlComprimento' => $this->nVlComprimento,
-                         'nVlAltura' => $this->nVlAltura,
-                         'nVlLargura' => $this->nVlLargura,
-                         'nVlDiametro' => $this->nVlDiametro,
-                         'sCdMaoPropria' => $this->sCdMaoPropria,
-                         'nVlValorDeclarado' => $this->nVlValorDeclarado,
-                         'sCdAvisoRecebimento' => $this->sCdAvisoRecebimento,
-                         'StrRetorno' => $this->StrRetorno
-                        );
-        $urlQuerie = http_build_query($queries, '', '&');//Usa ;& como separador
+            'sDsSenha' => $this->sDsSenha,
+            'nCdServico' => $this->nCdServico,
+            'sCepOrigem' => $this->sCepOrigem,
+            'sCepDestino' => $this->sCepDestino,
+            'nVlPeso' => $this->nVlPeso,
+            'nCdFormato' => $this->nCdFormato,
+            'nVlComprimento' => $this->nVlComprimento,
+            'nVlAltura' => $this->nVlAltura,
+            'nVlLargura' => $this->nVlLargura,
+            'nVlDiametro' => $this->nVlDiametro,
+            'sCdMaoPropria' => $this->sCdMaoPropria,
+            'nVlValorDeclarado' => $this->nVlValorDeclarado,
+            'sCdAvisoRecebimento' => $this->sCdAvisoRecebimento,
+            'StrRetorno' => $this->StrRetorno
+        );
+        $urlQuerie = http_build_query($queries, '', '&'); //Usa ;& como separador
         $url = 'http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx?' . $urlQuerie;
-        $this->resultado = $this->_getPageContent( $url );
-        
-        $xml = new SimpleXMLElement( $this->resultado );//@todo: Checar se SimpleXML e mesmo o meio mais eficiente de fazer isso
-        
+        $this->resultado = $this->_getPageContent($url);
+
+        $xml = new SimpleXMLElement($this->resultado); //@todo: Checar se SimpleXML e mesmo o meio mais eficiente de fazer isso
+
         return $xml;
-        
     }
-    
-    /*  
+
+    /**
      * Get external URL
      * Check best way to load one URL, and return it
      * 
      * @todo: tratar um erro que acontece quando a pagina dos correios esta indisponivel
      * 
-     * @var          string         $url: url to import
-     * 
-     * @return       string
+     * @var String $url: url to import
+     * @return String
      * 
      */
-    private function _getPageContent( $url ){
-        
-        if( !function_exists('curl_init') ){            
+    private function _getPageContent($url) {
+
+        if (!function_exists('curl_init')) {
             $c = curl_init();
             curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($c, CURLOPT_URL, $url);
             $page = curl_exec($c);
-            curl_close($c);            
+            curl_close($c);
         } else {
-            $page = file_get_contents( $url );
+            $page = file_get_contents($url);
         } //@todo: maybe add later fopen(), file()...
-        
-        return $page;        
-    }    
+
+        return $page;
+    }
+
 }

@@ -1,219 +1,215 @@
 <?php
+
 /*
  * @package         DynamicFileCreate
- * @subpackage      
- * @author          Emerson Rocha Luiz ( emerson@webdesign.eng.br - @fititnt -  http://fititnt.org )
- * @copyright       Copyright (C) 2005 - 2011 Webdesign Assessoria em Tecnologia da Informacao.
- * @license         GPL3
- * @version         0.5beta1 (2011-14-08)
+ * @author          Emerson Rocha Luiz - emerson at webdesign.eng.br - http://fititnt.org
+ * @copyright       Copyright (C) 2011 Webdesign Assessoria em Tecniligia da Informacao. All rights reserved.
+ * @license         GNU General Public License version 3. See license-gpl3.txt
+ * @license         Massachusetts Institute of Technology. See license-mit.txt
+ * @version         0.5beta2 (2011-14-08)
  */
-
 
 class DynamicCreateFile {
     
- 
-    
     /* Content to be show/save
      * 
-     * var      string     
+     * @var String     
      */
+
     private $content;
-    
+
     /* Chaset of content
      * 
-     * var      string     
+     * @var String    
      */
     private $charset = 'utf-8';
-    
+
     /* Mime type of content
      * 
-     * var      string     
+     * @var String     
      */
     private $type = 'text/plain';
-    
+
     /* Path of file to save
      * Need only on save() method
      * 
-     * var      string     
+     * @var String    
      */
     private $path;
-    
+
 
     /* Name of file to save
      * Need only on save() method
      * 
-     * var      string     
+     * @var String   
      */
     private $name = 'undefined.txt';
-    
+
     /* Name of file to save
      * Need only on save() method
      * 
-     * var      string     
+     * @var String
      */
     private $cache = 'no-cache';
 
-    
-    
-    function __contruct()
-    {
+    /**
+     * 
+     */
+    function __contruct() {
         
     }
 
-    /*  Method to show on page
-     *  @var        string          $name: name of var
+    /**
+     * @Method to show on page
+     * @param[in] String $name: name of var
      * 
-     * return       object      $this
+     * @return       object      $this
      */
-    public function show( )
-    {
+    public function show() {
         $this->_setHeader();
         echo $this->content;
         return $this;
     }
-    
-    
+
     /* Method to save in file content
      * 
-     * return       object      $this
+     * @return Object $this
      */
-    public function save()
-    {
-        $handle = fopen( $this->path . DIRECTORY_SEPARATOR . $this->name, 'w+');
-        
-        if( $handle )
-        {
+
+    public function save() {
+        $handle = fopen($this->path . DIRECTORY_SEPARATOR . $this->name, 'w+');
+
+        if ($handle) {
             return false; // Cannot open
         }
-        if( fwrite($handle, $this->content ) === FALSE )
-        {
+        if (fwrite($handle, $this->content) === FALSE) {
             return false; // Cannot write
         }
         fclose($handle);
-        
+
         return $this;
     }
-    
-    /*
-     *  @var        string          $name: name of var
-     *  @var        mixed           $value: value of var
+
+    /**
+     * @var String $name: name of var
+     * @var Mixed $value: value of var
      * 
-     * return       object      $this
+     * @return       object      $this
      */
-    public function set( $name, $value )
-    {
+
+    public function set($name, $value) {
         $this->$name = $value;
         return $this;
     }
-    
-    /*
-     *  @var        string          $name: name of var
-     * 
-     * return       object          $this
+
+    /**
+     * @param[in] String $name: name of var
+     * @return       object          $this
      */
-    public function del( $name )
-    {
+
+    public function del($name) {
         $this->$name = NULL;
         return $this;
     }
-    
-    /*
-     *  @var        string          $name: name of var
+
+    /**
+     * @param[in] String $name: name of var
      * 
-     * return       object          $this
+     * @return Object $this
      */
-    public function content( $value )
-    {
-        $this->content = $value;   
+
+    public function content($value) {
+        $this->content = $value;
         return $this;
     }
-    
+
     /*
-     *  @var        string          $name: name of var
+     * @param[in] String $name: name of var
      * 
-     * return       object          $this
+     * @return       object          $this
      */
-    public function path( $value )
-    {
-        $this->path = $value;   
+
+    public function path($value) {
+        $this->path = $value;
         return $this;
     }
-    
-    /*
-     *  @var        string          $name: name of var
+
+    /**
+     * @param[in] String $name: name of var
      * 
-     * return       object          $this
+     * @return       object          $this
      */
-    public function name( $value )
-    {
-        $this->name = $value;   
+
+    public function name($value) {
+        $this->name = $value;
         return $this;
     }
-    
-    /*
-     *  @var        string          $name: name of var
+
+    /**
+     * @param[in] String $name: name of var
      * 
-     * return       object          $this
+     * @return       object          $this
      */
-    public function type( $value )
-    {
-        $this->type = $value;   
+
+    public function type($value) {
+        $this->type = $value;
         return $this;
     }
-    
-    
-    /*
-     *  @var        string          $name: name of var
+
+    /**
+     * @param[in] String $name: name of var
      * 
-     * return       void            Print var_dump of files
+     * @return Void Print var_dump of files
      */
-    public function debug()
-    {
+
+    public function debug() {
         echo "\ncontent: \n";
-        var_dump( $this->content );
+        var_dump($this->content);
         echo "\npath: \n";
-        var_dump( $this->path );
+        var_dump($this->path);
         echo "\nname: \n";
-        var_dump( $this->name );
+        var_dump($this->name);
         echo "\ntype: \n";
-        var_dump( $this->type );
+        var_dump($this->type);
     }
-    
-    /*
+
+    /**
      * Create header()
      * Used when show() method is active
      * 
      * @return      void            set the header of file
      */
-    private function _setHeader( )
-    {
-        
+
+    private function _setHeader() {
+
         $header = new stdClass;
-        switch( $this->type ){
+        switch ($this->type) {
             case 'html':
-            case 'htm':         $content_type = 'text/html'; break; //application/javascript?
-            case 'js': 
-            case 'javascript':  $content_type = 'text/javascript'; break; //application/javascript?
-            case 'css':         $content_type = 'text/css'; break;
-            case 'pdf':         $content_type = 'application/pdf'; break;
-            default:            $content_type = $this->type;
+            case 'htm': $content_type = 'text/html';
+                break; //application/javascript?
+            case 'js':
+            case 'javascript': $content_type = 'text/javascript';
+                break; //application/javascript?
+            case 'css': $content_type = 'text/css';
+                break;
+            case 'pdf': $content_type = 'application/pdf';
+                break;
+            default: $content_type = $this->type;
         }
         $header->contentType = $content_type;
-        
-        if( isset( $this->charset )){
-            $header->charset .= '; charset='. $this->charset;
+
+        if (isset($this->charset)) {
+            $header->charset .= '; charset=' . $this->charset;
         } else {
             $header->charset .= '; charset=charset=';
         }
-        
-        $this->_printHeader( $header );
+
+        $this->_printHeader($header);
     }
-    
-    
-    private function _printHeader( $header )
-    {
-        header('Content-type: '. $header->contentType . $header->charset);
-        header('Pragma: '. $this->cache); 
+
+    private function _printHeader($header) {
+        header('Content-type: ' . $header->contentType . $header->charset);
+        header('Pragma: ' . $this->cache);
     }
-    
+
 }

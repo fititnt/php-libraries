@@ -26,24 +26,28 @@ class URLDecrypter {
     
     /**
      * If requested only one decrypt, hold the solution
+     * 
      * @var String 
      */
     private $solution;
     
     /**
      * If requested more than one decrypt, hold the array of solution
+     * 
      * @var Array
      */
     private $solutions;
     
     /**
      * If requested only one decrypt, hold the request
+     * 
      * @var String 
      */
     private $target;
     
     /**
      * If requested more than one decrypt, hold the request
+     * 
      * @var Array
      */
     private $targets;
@@ -128,13 +132,10 @@ class URLDecrypter {
         } else {
             $this->method->type = 1;//Just one target
         }
-        
-        
-        
         return $solutions;
     }    
     
-    /*
+    /**
      * Delete (set to NULL) generic variable
      * 
      * @param         String           $name: name of var do delete
@@ -146,7 +147,7 @@ class URLDecrypter {
         return $this;
     }
 
-    /*
+    /**
      * Return generic variable
      * 
      * @param         String          $name: name of var to return
@@ -157,7 +158,7 @@ class URLDecrypter {
         return $this->$name;
     }
 
-    /*
+    /**
      * Set one generic variable the desired value
      * 
      * @param         String          $name: name of var to set value
@@ -272,7 +273,6 @@ class URLDecrypter {
         $result = array_search( $data, $this->urlshorteners );
         
         return $result;
-        
     }
     
     /**
