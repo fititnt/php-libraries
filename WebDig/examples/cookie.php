@@ -1,5 +1,6 @@
 <?php
-/*
+
+/**
  * @package         PageParser
  * @author          Emerson Rocha Luiz - emerson at webdesign.eng.br - http://fititnt.org
  * @copyright       Copyright (C) 2011 Webdesign Assessoria em Tecniligia da Informacao. All rights reserved.
@@ -12,7 +13,7 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE); //better debug
 
 include_once '../../WebDig/library/WebDig.php';
 
-$wd = new WebDig(); 
+$wd = new WebDig();
 
 $wd->setUrl('http://www.google.com.br')->setCookie()->dig(TRUE);
 

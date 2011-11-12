@@ -28,8 +28,8 @@ Dependences:
 
 -------------------------------------- Todo ------------------------------------
 
-- Implement curl_ setopt_ on __construct
 - Implement way to run also in CLI
+- Solve problem with follow location
 
 ----------------------------------- Changelog ----------------------------------
 
