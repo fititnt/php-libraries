@@ -8,14 +8,14 @@
  * @version         0.5beta1 (2011-08-23)
  */
 class ValorFreteCorreios {
-    /* Seu código administrativo junto à ECT. O código está disponível no corpo 
+
+    /** Seu código administrativo junto à ECT. O código está disponível no corpo 
      * do contrato firmado com os Correios.
      * 
      * Exigido: Não, mas o parâmetro tem que ser passado mesmo vazio.
      * 
      * @var String    
      */
-
     private $nCdEmpresa = '';
 
     /**
@@ -71,7 +71,7 @@ class ValorFreteCorreios {
      * 
      * Exigido: Sim
      * 
-     * var      string     
+     * @var string     
      */
     private $nVlPeso = 1;
 
@@ -83,7 +83,7 @@ class ValorFreteCorreios {
      * 
      * Exigido: Sim
      * 
-     * var      Int     
+     * @var      Int     
      */
     private $nCdFormato = 1;
 
@@ -92,7 +92,7 @@ class ValorFreteCorreios {
      * 
      * Exigido: Sim
      * 
-     * var      Decimal     
+     * @var      Decimal     
      */
     private $nVlComprimento = 33; //Valor maximo, por padrao
 
@@ -110,7 +110,7 @@ class ValorFreteCorreios {
      * 
      * Exigido: Sim
      * 
-     * var      Decimal     
+     * @var      Decimal     
      */
     private $nVlLargura = 33; //Valor maximo, por padrao
 
@@ -119,7 +119,7 @@ class ValorFreteCorreios {
      * 
      * Exigido: Sim
      * 
-     * var      Decimal     
+     * @var      Decimal     
      */
     private $nVlDiametro;
 
@@ -140,7 +140,7 @@ class ValorFreteCorreios {
      * 
      * Exigido: Sim. Se não optar pelo serviço informar zero.
      * 
-     * var      Decimal     
+     * @var      Decimal     
      */
     private $nVlValorDeclarado = 0;
 
@@ -171,7 +171,7 @@ class ValorFreteCorreios {
     /*
      * Resultado bruto da pagina dos correios
      * 
-     * @var String     
+     * @param String     
      */
     private $resultado = NULL;
 
@@ -182,7 +182,7 @@ class ValorFreteCorreios {
     /**
      *  Metodo para exibir em formaso JSON
      * 
-     * @var String $type: mime-type a ser retornado.    
+     * @param String $type: mime-type a ser retornado.    
      * @return Object $this
      */
     public function json($type = NULL) {
@@ -199,7 +199,7 @@ class ValorFreteCorreios {
     /**
      * Metodo para exibir em formato XML
      *
-     * @var String $type: mime-type a ser retornado.    
+     * @param String $type: mime-type a ser retornado.    
      * @return       object      $this
      */
     public function xml($type = NULL) {
@@ -226,9 +226,9 @@ class ValorFreteCorreios {
     }
 
     /**
-     * @var        string          $name: name of var
-     * @var        mixed           $value: value of var
-     * @return       object      $this
+     * @param string $name: name of var
+     * @param mixed $value: value of var
+     * @return object $this
      */
     public function set($name, $value) {
         $this->$name = $value;
@@ -236,7 +236,7 @@ class ValorFreteCorreios {
     }
 
     /**
-     * @var String  $name: name of var
+     * @param String $name: name of var
      * @return Object $this
      */
     public function del($name) {
@@ -245,9 +245,9 @@ class ValorFreteCorreios {
     }
 
     /**
-     *  CEP de origem. Apenas numeros
+     * CEP de origem. Apenas numeros
      * 
-     *  @var        string          $name: name of var
+     * @param string          $name: name of var
      * 
      * return       object          $this
      */
@@ -259,7 +259,7 @@ class ValorFreteCorreios {
     /**
      * CEP de destino. Apenas numeros
      * 
-     * @var String $name: name of var
+     * @param String $name: name of var
      * 
      * @return Object $this
      */
@@ -269,10 +269,10 @@ class ValorFreteCorreios {
     }
 
     /**
-     *  CEP de destino. Apenas numeros
+     * CEP de destino. Apenas numeros
      * 
-     * @var@var String $name: name of var
-     * @return Object $this
+     * @param string $name: name of var
+     * @return object $this
      */
     public function peso($value) {
         $this->nVlPeso = $value;
@@ -280,10 +280,10 @@ class ValorFreteCorreios {
     }
 
     /**
-     *  Numero do servico
+     * Numero do servico
      * 
-     * @var String $name: name of var
-     * @return Object $this
+     * @param string $name: name of var
+     * @return object $this
      */
     public function servico($value) {
         $this->nCdServico = $value;
@@ -347,7 +347,7 @@ class ValorFreteCorreios {
      * 
      * @todo: tratar um erro que acontece quando a pagina dos correios esta indisponivel
      * 
-     * @var String $url: url to import
+     * @param String $url: url to import
      * @return String
      * 
      */
