@@ -16,7 +16,7 @@ include_once '../../WebDig/library/WebDig.php';
 $pp = new PageParser();
 $wd = new WebDig(); 
 
-$page = $wd->setUrl("http://maujor.com/w3ctuto/firstcss.html")->dig( TRUE );
+$page = $wd->setTarget("http://maujor.com/w3ctuto/firstcss.html")->dig( TRUE );
 echo $pp->setPage($page)->ppId('p5');
 
 //@todo:
