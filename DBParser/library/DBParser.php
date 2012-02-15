@@ -79,12 +79,12 @@ class DBParser {
 	 * @code
 	 * $postgresql = new DBParser();
 	 * $postgresql
-	 *		->setDriver('postgresql')
-	 *		->setHost('localhost')
-	 *		->setDatabase('db_name')
-	 *		->setUsername('postgres')
-	 *		->setPassword('password')
-	 *		->connect();
+	 * 		->setDriver('postgresql')
+	 * 		->setHost('localhost')
+	 * 		->setDatabase('db_name')
+	 * 		->setUsername('postgres')
+	 * 		->setPassword('password')
+	 * 		->connect();
 	 * ;
 	 * @endcode
 	 * 
@@ -121,7 +121,7 @@ class DBParser {
 					default:
 						throw new Exception('Database driver did not match (' . $this->driver . ')');
 						break;
-				}			
+				}
 			} catch (PDOException $e) {
 				echo $e->getMessage();
 			} catch (Exception $e) {
@@ -151,8 +151,33 @@ class DBParser {
 	 * @param type $command
 	 * @return Object $this Suport for method chaining
 	 */
+	public function exec($command) {
+		$this->_conn_handler->exec($command);
+		return $this;
+	}
+	
+	/**
+	 * Fetch results
+	 * 
+	 * @see setFetchMode()
+	 * 
+	 * @return mixed Results
+	 */
+	public function fetch() {
+		return $this->_conn_handler->fetch();;
+	}
+
+	/**
+	 * PDO execute statement
+	 * 
+	 * @todo Think better if this method like is now is really right (fititnt, 
+	 * 2012-02-15 07:47)
+	 * 
+	 * @param type $command
+	 * @return Object $this Suport for method chaining
+	 */
 	public function excecute($command = NULL) {
-		$this->_conn_handler = $this->_connection->excecute($command);
+		$this->_connection->excecute($command);
 		return $this;
 	}
 
@@ -162,12 +187,12 @@ class DBParser {
 	 * @see github.com/fititnt/php-snippet/tree/master/dump
 	 * 
 	 * @param array $option Whoe function must work
-	 *						$option['method'] = 'default':
-	 *							Return simple print_r() inside <pre>
-	 *						$option['method'] = 'console':
-	 *							Return values on javascript console of browsers
-	 *						$option['die'] = 1:
-	 *							If excecution must stop after excecution
+	 * 						$option['method'] = 'default':
+	 * 							Return simple print_r() inside <pre>
+	 * 						$option['method'] = 'console':
+	 * 							Return values on javascript console of browsers
+	 * 						$option['die'] = 1:
+	 * 							If excecution must stop after excecution
 	 * 
 	 * @return Object $this Suport for method chaining
 	 */
@@ -183,7 +208,7 @@ class DBParser {
 				$html[] = 'console.groupCollapsed("' . __CLASS__ . ':' . $date . '");';
 				//@todo: add separed group (fititnt, 2012-02-15 02:03)
 				$html[] = 'console.groupCollapsed("$this");';
-				$html[] = 'console.dir(eval(' . json_encode($this) . '));';//evail is evil... And?
+				$html[] = 'console.dir(eval(' . json_encode($this) . '));'; //evail is evil... And?
 				$html[] = 'console.groupEnd()';
 				$html[] = 'console.groupEnd()';
 				$html[] = '</script>';
@@ -213,6 +238,15 @@ class DBParser {
 	}
 
 	/**
+	 * Return last inserted ID
+	 * 
+	 * @return Mixed $this->_connection->lastInsertId()
+	 */
+	public function lastInsertId() {
+		return $this->_connection->lastInsertId();
+	}
+
+	/**
 	 * PDO prepare statement
 	 * 
 	 * @param type $command
@@ -225,6 +259,27 @@ class DBParser {
 		}
 		$this->_conn_handler = $this->_connection->prepare($command);
 		return $this;
+	}
+
+	/**
+	 * Quotes strings to be safe to use on queries. Useful if is not using
+	 * prepared statements
+	 * 
+	 * @return mixed $safe Quoted variable
+	 */
+	public function quote($unsafe) {
+		$safe = $this->_connection->quote($unsafe);
+		return $safe;
+	}
+
+	/**
+	 * Number of rows affected of last operation
+	 * 
+	 * @return int $count Suport for method chaining
+	 */
+	public function rowCount($unsafe) {
+		$count = $this->_conn_handler->rowCount($unsafe);
+		return $count;
 	}
 
 	/**
@@ -247,6 +302,57 @@ class DBParser {
 	 */
 	public function setDatabase($value) {
 		$this->database = strtolower($value);
+		return $this;
+	}
+
+	/**
+	 * Define fetch mode.
+	 * 
+	 * @param string $mode: Fetch mode. Default: BOTH
+	 * @return Object $this Suport for method chaining
+	 */
+	public function setFetchMode($mode = 'BOTH') {
+		switch (strtoupper($mode)) {
+			case 'ASSOC':
+			case 'FETCH_ASSOC':
+				$this->_conn_handler->rowCount(PDO::FETCH_ASSOC);
+				break;
+			case 'BOTH':
+			case 'FETCH_BOTH':
+				$this->_conn_handler->rowCount(PDO::FETCH_BOTH);
+				break;
+			case 'BOUND':
+			case 'FETCH_BOUND':
+				$this->_conn_handler->rowCount(PDO::FETCH_BOUND);
+				break;
+			case 'CLASS':
+			case 'FETCH_CLASS':
+				$this->_conn_handler->rowCount(PDO::FETCH_CLASS);
+				break;
+			case 'INTO':
+			case 'FETCH_INTO':
+				$this->_conn_handler->rowCount(PDO::FETCH_INTO);
+				break;
+			case 'LAZY':
+			case 'FETCH_LAZY':
+				$this->_conn_handler->rowCount(PDO::FETCH_LAZY);
+				break;
+			case 'BOTH':
+			case 'FETCH_BOTH':
+				$this->_conn_handler->rowCount(PDO::FETCH_BOTH);
+				break;
+			case 'NUM':
+			case 'FETCH_NUM':
+				$this->_conn_handler->rowCount(PDO::FETCH_NUM);
+				break;
+			case 'OBJ':
+			case 'FETCH_OBJ':
+				$this->_conn_handler->rowCount(PDO::FETCH_OBJ);
+				break;
+			default:
+				break;
+		}
+
 		return $this;
 	}
 
@@ -293,9 +399,4 @@ class DBParser {
 		$this->username = strtolower($value);
 		return $this;
 	}
-	
-	public function setQuery($query){
-		//...
-	}
-
 }
