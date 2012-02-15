@@ -72,6 +72,27 @@ class DBParser {
 		return $this;
 	}
 
+	/**
+	 * Connect to desired Database
+	 * 
+	 * @example
+	 * @code
+	 * $postgresql = new DBParser();
+	 * $postgresql
+	 *		->setDriver('postgresql')
+	 *		->setHost('localhost')
+	 *		->setDatabase('db_name')
+	 *		->setUsername('postgres')
+	 *		->setPassword('password')
+	 *		->connect();
+	 * ;
+	 * @endcode
+	 * 
+	 * @param mixed $driver if NULL or FALSE, reset connection. If string, load
+	 *                      respective driver
+	 * @return Object $this Suport for method chaining
+	 * @throws Exception 
+	 */
 	public function connect($driver = TRUE) {
 		if ($driver === FALSE || $driver === NULL) {
 			$this->_connection = NULL;
@@ -133,24 +154,49 @@ class DBParser {
 	}
 
 	/**
-	 * Function to debug $this object
-	 *
-	 * @param String $method: print_r or, var_dump
-	 * @param boolean $format: true for print <pre> tags. Default false
-	 * @return void
+	 * Method to debug one class from inside
+	 * 
+	 * @see github.com/fititnt/php-snippet/tree/master/dump
+	 * 
+	 * @param array $option Whoe function must work
+	 *						$option['method'] = 'default':
+	 *							Return simple print_r() inside <pre>
+	 *						$option['method'] = 'console':
+	 *							Return values on javascript console of browsers
+	 *						$option['die'] = 1:
+	 *							If excecution must stop after excecution
+	 * 
+	 * @return Object $this Suport for method chaining
 	 */
-	public function debug($method = 'print_r', $format = FALSE) {
-		if ($format) {
-			echo '<pre>';
+	public function debug($option = array()) {
+		if (!isset($option['method'])) {
+			$option['method'] = 'default';
 		}
-		if ($method === 'print_r') {
-			print_r($this);
-		} else {
-			var_dump($this);
+		switch ($option['method']) {
+			case 'console':
+				$html = array();
+				$date = date("Y-m-d h:i:s");
+				$html[] = '<script>';
+				$html[] = 'console.groupCollapsed("' . __CLASS__ . ':' . $date . '");';
+				//@todo: add separed group (fititnt, 2012-02-15 02:03)
+				$html[] = 'console.groupCollapsed("$this");';
+				$html[] = 'console.dir(eval(' . json_encode($this) . '));';//evail is evil... And?
+				$html[] = 'console.groupEnd()';
+				$html[] = 'console.groupEnd()';
+				$html[] = '</script>';
+				echo implode(PHP_EOL, $html);
+				break;
+			case 'default':
+			default:
+				echo '<pre>';
+				print_r($this);
+				echo '</pre>';
+				break;
 		}
-		if ($format) {
-			echo '</pre>';
+		if (isset($option['die'])) {
+			die;
 		}
+		return $this;
 	}
 
 	/**
