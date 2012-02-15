@@ -11,21 +11,21 @@
  */
 
 class DBParser {
-	
+
 	/**
 	 * PDO connection resource
 	 * 
 	 * @var string 
 	 */
 	protected $_connection;
-	
+
 	/**
 	 * PDO connection resource
 	 * 
 	 * @var string 
 	 */
 	protected $_conn_handler;
-	
+
 	/**
 	 * Database Name
 	 * 
@@ -39,22 +39,20 @@ class DBParser {
 	 * @var string 
 	 */
 	protected $driver;
-	
+
 	/**
 	 * Databse username passowrd
 	 * 
 	 * @var string 
 	 */
 	private $password;
-	
+
 	/**
 	 * Databse username
 	 * 
 	 * @var string 
 	 */
 	protected $username;
-	
-	
 
 	/**
 	 *
@@ -64,90 +62,13 @@ class DBParser {
 	}
 
 	/**
-	 * Delete (set to NULL) generic variable
+	 * PDO execute statement
 	 * 
-	 * @param         String           $name: name of var do delete
-	 * @return      Object          $this
+	 * @param type $command
+	 * @return instance This class 
 	 */
-	public function del($name) {
-		$this->$name = NULL;
-		return $this;
-	}
-
-	/**
-	 * Return generic variable
-	 * 
-	 * @param         String          $name: name of var to return
-	 * @return      Mixed          $this->$name: value of var
-	 */
-	public function get($name) {
-		return $this->$name;
-	}
-
-	/**
-	 * Set one generic variable the desired value
-	 * 
-	 * @param         String          $name: name of var to set value
-	 * @param         Mixed           $value: value to set to desired variable
-	 * @return      Object          $this
-	 */
-	public function set($name, $value) {
-		$this->$name = $value;
-		return $this;
-	}
-
-	/**
-	 * Set database name
-	 * 
-	 * @param string $value: value to set to desired variable
-	 * @return Object $this
-	 */
-	public function setDatabase($value) {
-		$this->database = strtolower($value);
-		return $this;
-	}
-
-	/**
-	 * Set database driver
-	 * 
-	 * @param string $value: value to set to desired variable
-	 * @return Object $this
-	 */
-	public function setDriver($value) {
-		$this->driver = strtolower($value);
-		return $this;
-	}
-
-	/**
-	 * Set database username
-	 * 
-	 * @param string $value: value to set to desired variable
-	 * @return Object $this
-	 */
-	public function setUsername($value) {
-		$this->username = strtolower($value);
-		return $this;
-	}
-
-	/**
-	 * Set database host
-	 * 
-	 * @param string $value: value to set to desired variable
-	 * @return Object $this
-	 */
-	public function setHost($value) {
-		$this->host = strtolower($value);
-		return $this;
-	}
-
-	/**
-	 * Set database password
-	 * 
-	 * @param string $value: value to set to desired variable
-	 * @return Object $this
-	 */
-	public function setPassword($value) {
-		$this->password = strtolower($value);
+	public function bind() {
+		//...
 		return $this;
 	}
 
@@ -188,38 +109,25 @@ class DBParser {
 		}
 		return $this;
 	}
-	
+
 	/**
-	 * PDO prepare statement
+	 * Delete (set to NULL) generic variable
 	 * 
-	 * @param type $command
-	 * @return instance This class 
+	 * @param         String           $name: name of var do delete
+	 * @return      Object          $this
 	 */
-	public function prepare($command){
-		if ($command === FALSE || $driver === NULL) {
-			$this->_conn_handler = NULL;
-			return $this;
-		}
-	}
-	
-	/**
-	 * PDO execute statement
-	 * 
-	 * @param type $command
-	 * @return instance This class 
-	 */
-	public function bind(){
-		//...
+	public function del($name) {
+		$this->$name = NULL;
 		return $this;
 	}
-	
+
 	/**
 	 * PDO execute statement
 	 * 
 	 * @param type $command
 	 * @return instance This class 
 	 */
-	public function excecute($command = NULL){
+	public function excecute($command = NULL) {
 		$this->_conn_handler = $this->_connection->excecute($command);
 		return $this;
 	}
@@ -243,6 +151,96 @@ class DBParser {
 		if ($format) {
 			echo '</pre>';
 		}
+	}
+
+	/**
+	 * Return generic variable
+	 * 
+	 * @param         String          $name: name of var to return
+	 * @return      Mixed          $this->$name: value of var
+	 */
+	public function get($name) {
+		return $this->$name;
+	}
+
+	/**
+	 * PDO prepare statement
+	 * 
+	 * @param type $command
+	 * @return instance This class 
+	 */
+	public function prepare($command) {
+		if ($command === FALSE || $driver === NULL) {
+			$this->_conn_handler = NULL;
+			return $this;
+		}
+	}
+
+	/**
+	 * Set one generic variable the desired value
+	 * 
+	 * @param         String          $name: name of var to set value
+	 * @param         Mixed           $value: value to set to desired variable
+	 * @return      Object          $this
+	 */
+	public function set($name, $value) {
+		$this->$name = $value;
+		return $this;
+	}
+
+	/**
+	 * Set database name
+	 * 
+	 * @param string $value: value to set to desired variable
+	 * @return Object $this
+	 */
+	public function setDatabase($value) {
+		$this->database = strtolower($value);
+		return $this;
+	}
+
+	/**
+	 * Set database driver
+	 * 
+	 * @param string $value: value to set to desired variable
+	 * @return Object $this
+	 */
+	public function setDriver($value) {
+		$this->driver = strtolower($value);
+		return $this;
+	}
+
+	/**
+	 * Set database host
+	 * 
+	 * @param string $value: value to set to desired variable
+	 * @return Object $this
+	 */
+	public function setHost($value) {
+		$this->host = strtolower($value);
+		return $this;
+	}
+
+	/**
+	 * Set database password
+	 * 
+	 * @param string $value: value to set to desired variable
+	 * @return Object $this
+	 */
+	public function setPassword($value) {
+		$this->password = strtolower($value);
+		return $this;
+	}
+
+	/**
+	 * Set database username
+	 * 
+	 * @param string $value: value to set to desired variable
+	 * @return Object $this
+	 */
+	public function setUsername($value) {
+		$this->username = strtolower($value);
+		return $this;
 	}
 
 }
