@@ -39,4 +39,4 @@ $pdo_mysql
 		->connect();
 ;
 
-print_r($pdo_mysql->debug());
+print_r($pdo_mysql->debug(array('method'=> 'console')));

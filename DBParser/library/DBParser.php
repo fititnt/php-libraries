@@ -17,7 +17,7 @@ class DBParser {
 	 * 
 	 * @var string 
 	 */
-	protected $_connection;
+	private static $_connection;
 
 	/**
 	 * PDO connection resource
@@ -65,7 +65,7 @@ class DBParser {
 	 * PDO execute statement
 	 * 
 	 * @param type $command
-	 * @return instance This class 
+	 * @return Object $this Suport for method chaining
 	 */
 	public function bind() {
 		//...
@@ -121,7 +121,7 @@ class DBParser {
 					default:
 						throw new Exception('Database driver did not match (' . $this->driver . ')');
 						break;
-				}
+				}			
 			} catch (PDOException $e) {
 				echo $e->getMessage();
 			} catch (Exception $e) {
@@ -134,8 +134,8 @@ class DBParser {
 	/**
 	 * Delete (set to NULL) generic variable
 	 * 
-	 * @param         String           $name: name of var do delete
-	 * @return      Object          $this
+	 * @param String $name: name of var do delete
+	 * @return Object $this Suport for method chaining
 	 */
 	public function del($name) {
 		$this->$name = NULL;
@@ -145,8 +145,11 @@ class DBParser {
 	/**
 	 * PDO execute statement
 	 * 
+	 * @todo Think better if this method like is now is really right (fititnt, 
+	 * 2012-02-15 07:47)
+	 * 
 	 * @param type $command
-	 * @return instance This class 
+	 * @return Object $this Suport for method chaining
 	 */
 	public function excecute($command = NULL) {
 		$this->_conn_handler = $this->_connection->excecute($command);
@@ -202,8 +205,8 @@ class DBParser {
 	/**
 	 * Return generic variable
 	 * 
-	 * @param         String          $name: name of var to return
-	 * @return      Mixed          $this->$name: value of var
+	 * @param String $name: name of var to return
+	 * @return Mixed $this->$name: value of var
 	 */
 	public function get($name) {
 		return $this->$name;
@@ -213,21 +216,23 @@ class DBParser {
 	 * PDO prepare statement
 	 * 
 	 * @param type $command
-	 * @return instance This class 
+	 * @return Object $this Suport for method chaining
 	 */
 	public function prepare($command) {
 		if ($command === FALSE || $driver === NULL) {
 			$this->_conn_handler = NULL;
 			return $this;
 		}
+		$this->_conn_handler = $this->_connection->prepare($command);
+		return $this;
 	}
 
 	/**
 	 * Set one generic variable the desired value
 	 * 
-	 * @param         String          $name: name of var to set value
-	 * @param         Mixed           $value: value to set to desired variable
-	 * @return      Object          $this
+	 * @param String $name: name of var to set value
+	 * @param Mixed $value: value to set to desired variable
+	 * @return Object $this Suport for method chaining
 	 */
 	public function set($name, $value) {
 		$this->$name = $value;
@@ -238,7 +243,7 @@ class DBParser {
 	 * Set database name
 	 * 
 	 * @param string $value: value to set to desired variable
-	 * @return Object $this
+	 * @return Object $this Suport for method chaining
 	 */
 	public function setDatabase($value) {
 		$this->database = strtolower($value);
@@ -249,7 +254,7 @@ class DBParser {
 	 * Set database driver
 	 * 
 	 * @param string $value: value to set to desired variable
-	 * @return Object $this
+	 * @return Object $this Suport for method chaining
 	 */
 	public function setDriver($value) {
 		$this->driver = strtolower($value);
@@ -260,7 +265,7 @@ class DBParser {
 	 * Set database host
 	 * 
 	 * @param string $value: value to set to desired variable
-	 * @return Object $this
+	 * @return Object $this Suport for method chaining
 	 */
 	public function setHost($value) {
 		$this->host = strtolower($value);
@@ -271,7 +276,7 @@ class DBParser {
 	 * Set database password
 	 * 
 	 * @param string $value: value to set to desired variable
-	 * @return Object $this
+	 * @return Object $this Suport for method chaining
 	 */
 	public function setPassword($value) {
 		$this->password = strtolower($value);
@@ -282,11 +287,15 @@ class DBParser {
 	 * Set database username
 	 * 
 	 * @param string $value: value to set to desired variable
-	 * @return Object $this
+	 * @return Object $this Suport for method chaining
 	 */
 	public function setUsername($value) {
 		$this->username = strtolower($value);
 		return $this;
+	}
+	
+	public function setQuery($query){
+		//...
 	}
 
 }
