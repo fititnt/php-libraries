@@ -41,6 +41,20 @@ class DBParser {
 	protected $driver;
 
 	/**
+	 * Contains result of some of last executed methods
+	 * 
+	 * This function may return Boolean FALSE, but may also return a non-Boolean
+	 * value which evaluates to FALSE. Please read the section on Booleans for 
+	 * more information. Use the === operator for testing the return value of 
+	 * this function.
+	 * 
+	 * @see exec()
+	 * 
+	 * @var mixed 
+	 */
+	protected $last_result;
+
+	/**
 	 * Databse username passowrd
 	 * 
 	 * @var string 
@@ -143,20 +157,6 @@ class DBParser {
 	}
 
 	/**
-	 * PDO execute statement
-	 * 
-	 * @todo Think better if this method like is now is really right (fititnt, 
-	 * 2012-02-15 07:47)
-	 * 
-	 * @param type $command
-	 * @return Object $this Suport for method chaining
-	 */
-	public function exec($command) {
-		$this->_conn_handler->exec($command);
-		return $this;
-	}
-	
-	/**
 	 * Fetch results
 	 * 
 	 * @see setFetchMode()
@@ -164,7 +164,38 @@ class DBParser {
 	 * @return mixed Results
 	 */
 	public function fetch() {
-		return $this->_conn_handler->fetch();;
+		return $this->_conn_handler->fetch();
+		;
+	}
+
+	/**
+	 * Fetch results
+	 * 
+	 * @see setFetchMode()
+	 * 
+	 * @return mixed Results
+	 */
+	public function fetchAll() {
+		return $this->_conn_handler->fetchAll();
+		;
+	}
+
+	/**
+	 * Proxy for PDO::exec
+	 * 
+	 * Execute an SQL statement and return the number of affected rows.
+	 * This does not return results from a SELECT statement. For a SELECT 
+	 * statement that you only need to issue once during your program, 
+	 * consider issuing query(). For a statement that you need to issue 
+	 * multiple times, prepare object with prepare() and issue the statement 
+	 * with execute().
+	 * 
+	 * @param string $command
+	 * @return Object $this Suport for method chaining
+	 */
+	public function exec($command) {
+		$this->last_result = $this->_connection->exec($command);
+		return $this;
 	}
 
 	/**
@@ -176,8 +207,8 @@ class DBParser {
 	 * @param type $command
 	 * @return Object $this Suport for method chaining
 	 */
-	public function excecute($command = NULL) {
-		$this->_connection->excecute($command);
+	public function execute($command = NULL) {
+		$this->_conn_handler->execute($command);
 		return $this;
 	}
 
@@ -247,18 +278,66 @@ class DBParser {
 	}
 
 	/**
-	 * PDO prepare statement
+	 * Proxy for PDO::prepare
+	 * Prepares an SQL statement to be executed by the execute() 
+	 * method. The SQL statement can contain zero or more named (:name) or 
+	 * question mark (?) parameter markers for which real values will be 
+	 * substituted when the statement is executed. You cannot use both named 
+	 * and question mark parameter markers within the same SQL statement; pick 
+	 * one or the other parameter style. Use these parameters to bind any 
+	 * user-input, do not include the user-input directly in the query.
 	 * 
-	 * @param type $command
+	 * You must include a unique parameter marker for each value you wish to 
+	 * pass in to the statement when you call execute(). You 
+	 * cannot use a named parameter marker of the same name twice in a prepared 
+	 * statement. You cannot bind multiple values to a single named parameter 
+	 * in, for example, the IN() clause of an SQL statement.
+	 * 
+	 * Calling prepare() and execute() for statements that will be issued 
+	 * multiple times with different parameter values optimizes the performance 
+	 * of your application by allowing the driver to negotiate client and/or 
+	 * server side caching of the query plan and meta information, and helps to 
+	 * prevent SQL injection attacks by eliminating the need to manually quote 
+	 * the parameters.
+	 * 
+	 * PDO will emulate prepared statements/bound parameters for drivers that do
+	 * not natively support them, and can also rewrite named or question mark 
+	 * style parameter markers to something more appropriate, if the driver 
+	 * supports one style but not the other.
+	 * 
+	 * @see http://www.php.net/manual/en/pdo.prepare.php
+	 * @see setFetchMode()
+	 * 
+	 * @param type $statement This must be a valid SQL statement for the target 
+	 *                        database server.
 	 * @return Object $this Suport for method chaining
 	 */
-	public function prepare($command) {
-		if ($command === FALSE || $driver === NULL) {
+	public function prepare($statement) {
+		if ($statement === FALSE || $statement === NULL) {
 			$this->_conn_handler = NULL;
 			return $this;
 		}
-		$this->_conn_handler = $this->_connection->prepare($command);
+		$this->_conn_handler = $this->_connection->prepare($statement);
 		return $this;
+	}
+
+	/**
+	 * Proxy for PDO::query
+	 * Executes an SQL statement in a single function call, returning the result
+	 * set (if any) returned by the statement as a PDOStatement object
+	 * 
+	 * 
+	 * 
+	 * @see http://www.php.net/manual/en/pdo.query.php
+	 * @see quote()
+	 * 
+	 * @param string $statement The SQL statement to prepare and execute. Data 
+	 *               inside the query should be properly escaped.
+	 * @return mixed $result Returns a PDOStatement object, or FALSE on failure.
+	 */
+	public function query($statement) {
+		$result = $this->_connection->query($statement);
+		return $result;
 	}
 
 	/**
@@ -399,4 +478,5 @@ class DBParser {
 		$this->username = strtolower($value);
 		return $this;
 	}
+
 }

@@ -12,10 +12,11 @@
 error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE); //better debug
 include_once '../library/DBParser.php';
 
-$postgresql = new DBParser();
+$pdo_postgresql = new DBParser();
 
 echo '<pre>';
-$postgresql
+echo "\t\tPOSTGRES: basic connection \n\n";
+$pdo_postgresql
 //		->setDriver('mysql')
 		->setDriver('postgresql')
 		->setHost('localhost')
@@ -25,8 +26,25 @@ $postgresql
 		->connect();
 ;
 
-print_r($postgresql->debug());
+print_r($pdo_postgresql->debug(array('method'=> 'console')));
+//DBParser Object
+//(
+//    [_conn_handler:protected] => 
+//    [database:protected] => db_bancada40
+//    [driver:protected] => postgresql
+//    [last_result:protected] => 
+//    [password:DBParser:private] => cain140ii
+//    [username:protected] => postgres
+//    [host] => localhost
+//    [_connection:DBParser:private] => PDO Object
+//        (
+//        )
+//
+//)
 
+
+echo '<pre>';
+echo "\t\tMYSQL: basic connection \n\n";
 $pdo_mysql = new DBParser();
 
 echo '<pre>';
@@ -40,3 +58,35 @@ $pdo_mysql
 ;
 
 print_r($pdo_mysql->debug(array('method'=> 'console')));
+//DBParser Object
+//(
+//    [_conn_handler:protected] => 
+//    [database:protected] => db_bancada39
+//    [driver:protected] => mysql
+//    [last_result:protected] => 
+//    [password:DBParser:private] => cain140ii
+//    [username:protected] => root
+//    [host] => localhost
+//    [_connection:DBParser:private] => PDO Object
+//        (
+//        )
+//
+//)
+
+echo '<pre>';
+echo "\t\tPOSTGRES: Return all fields from query \n\n";
+
+$pdo_postgresql->prepare('SELECT * FROM jos_content');
+$pdo_postgresql->execute();
+var_dump($pdo_postgresql->fetchAll());
+
+//array(66) {
+//  [0]=>
+//  array(68) {
+//    ["id"]=>
+//    int(1)
+//    [0]=>
+//    int(1)
+//    ["asset_id"]=>
+//    string(2) "89"
+// (...)
