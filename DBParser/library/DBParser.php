@@ -10,7 +10,7 @@
  * 
  */
 
-class DBParser {
+abstract class DBParser {
 
 	/**
 	 * PDO connection resource

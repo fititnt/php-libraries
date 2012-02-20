@@ -12,7 +12,15 @@
 error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE); //better debug
 include_once '../library/DBParser.php';
 
-$pdo_postgresql = new DBParser();
+//DBParser is abstract. Just extend it here to test
+class DBParserTest extends DBParser {
+	function __construct() {
+		parent::__construct();
+	}
+}
+
+
+$pdo_postgresql = new DBParserTest();
 
 echo '<pre>';
 echo "\t\tPOSTGRES: basic connection \n\n";
@@ -45,7 +53,7 @@ print_r($pdo_postgresql->debug(array('method'=> 'console')));
 
 echo '<pre>';
 echo "\t\tMYSQL: basic connection \n\n";
-$pdo_mysql = new DBParser();
+$pdo_mysql = new DBParserTest();
 
 echo '<pre>';
 $pdo_mysql
