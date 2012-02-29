@@ -267,6 +267,26 @@ abstract class DBParser {
 	public function get($name) {
 		return $this->$name;
 	}
+	
+	/**
+	 * Return information about one table
+	 * 
+	 * @param string $table Name of table
+	 * @return array 
+	 */
+	public function getTableInfo($table){
+		switch ($this->driver) {
+			case 'postgresql':
+			default:
+				$this->prepare('\d ' . $table);//Needs more test
+			case 'mysql':
+			default:
+				$this->prepare('DESC ' . $table);
+				break;
+		}
+		$this->execute();
+		return $this->fetchAll();
+	}
 
 	/**
 	 * Return last inserted ID
